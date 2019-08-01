@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')    
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    block styles
+    block scripts
+  body
+    block content
+
+
+
+
+block styles
+link(rel='stylesheet', href='/stylesheets/map.css')
+
+block scripts
+
+script(src='/javascripts/map.js')
+
+block content
+
+
+#floating-panel
+  |Тема:
+  select#select_topic(style={width: '160px'})
+    each val, index in {1:'one',2:'two',3:'three'}
+      option(value=val) #{index}
+  button(onclick="loadSelectedTopic()") Загрузить тему
+  select#select_month(name="selMonth")
+    each priority in ['2019', '2019-07', '2019-06', '2019-05', '2019-04', '2019-03', '2019-02', '2019-01']
+      option(value=priority+'-01' selected=(1==0) ) #{priority}
+  | FTS: 
+  input#input_fts(name='fts', value='', type='text') 
+  button(onclick="loadSelectedTopicFts()") Выполнить полнотекстовый поиск    
+      
+  
+  //button(onclick="toggleHeatmap()") Toggle Heatmap
+  //button(onclick="changeGradient()") Change gradient
+  //button(onclick="changeRadius()") Change radius
+  //button(onclick="changeOpacity()") Change opacity
+
+
+  
+#floating-panel-info
+   |Инфопанель
+   |-
+    
+#map
+
+script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB1HGxx5hlRpyXkBGykB69XgiLRpD7e5Ro&libraries=visualization&callback=initMap')

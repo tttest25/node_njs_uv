@@ -1,0 +1,96 @@
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+#map {
+    height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#floating-panel {
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: 'Roboto','sans-serif';
+    line-height: 30px;
+    padding-left: 10px;
+}
+#floating-panel {
+    background-color: #fff;
+    border: 1px solid #999;
+    left: 25%;
+    padding: 5px;
+    position: absolute;
+    top: 10px;
+    z-index: 5;
+}
+
+#floating-panel-info {
+    overflow: hidden;
+    overflow-y: scroll;
+    background-color: #fff;
+    border: 1px solid #999;
+    left: 75%;
+    padding: 5px;
+    width: 24% ;
+    height: 70% ;
+    position: absolute;
+    top: 10px;
+    z-index: 5;
+}
+
+.claim-panel
+{
+    border: 1px solid grey;
+    
+}
+.claim-panel-test
+{
+    border: 1px solid grey;
+    max-height: 1em;
+    overflow: hidden;    
+}
+
+
+.tooltip {
+position: relative;
+display: inline-block;
+border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+visibility: hidden;
+width: 240px;
+background-color: black;
+color: #fff;
+text-align: center;
+border-radius: 6px;
+padding: 5px 0;
+position: absolute;
+z-index: 1;
+bottom: 150%;
+left: 50%;
+margin-left: -10px;
+}
+
+.tooltip .tooltiptext::after {
+content: "";
+position: absolute;
+top: 100%;
+left: 50%;
+margin-left: -5px;
+border-width: 5px;
+border-style: solid;
+border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+visibility: visible;
+}

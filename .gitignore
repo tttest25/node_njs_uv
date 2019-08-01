@@ -1,0 +1,11 @@
+# NodeJS specific #
+node_modules
+build
+npm-debug.log
+cert
+.env
+.DS_Store
+package-lock.json
+config.json
+users.json
+*.pem
