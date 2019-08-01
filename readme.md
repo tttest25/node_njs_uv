@@ -12,16 +12,28 @@ git clone https://github.com/tttest25/node_njs_uv.git
 cp .env_example .env
 vim .env
 docker build -t melnikov_ea/node_njs_uv .
+# for initial install
 docker run \
 -p 3000:3000 \
--v $(pwd):/app
+-v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
 --name "node_njs_uv" \
---rm \
+-it --entrypoint /bin/bash melnikov_ea/node_njs_uv
+
+# run bash in container and run
+npm install
+
+#after install node_modules run
+docker run \
+-p 3000:3000 \
+-v $(pwd):/app \
+-m "300M" --memory-swap "1G" \
+--name "node_njs_uv" \
 -d melnikov_ea/node_njs_uv
+ 
 
-
--it \
+--rm \
+-d melnikov_ea/node_njs_uv \
 -w "/home/node/app" \
 ~~~
 
