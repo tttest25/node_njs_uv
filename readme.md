@@ -8,11 +8,21 @@
 Deploy
 ------------
 ~~~Bash
-git clone
+git clone https://github.com/tttest25/node_njs_uv.git
 cp .env_example .env
 vim .env
-docker build
-docker run
+docker build -t melnikov_ea/node_njs_uv .
+docker run \
+-p 3000:3000 \
+-v $(pwd):/app
+-m "300M" --memory-swap "1G" \
+--name "node_njs_uv" \
+--rm \
+-d melnikov_ea/node_njs_uv
+
+
+-it \
+-w "/home/node/app" \
 ~~~
 
 
