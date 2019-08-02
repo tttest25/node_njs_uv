@@ -32,6 +32,9 @@ block content
   select#select_month(name="selMonth")
     each priority in ['2019', '2019-07', '2019-06', '2019-05', '2019-04', '2019-03', '2019-02', '2019-01']
       option(value=priority+'-01' selected=(1==0) ) #{priority}
+  select#select_radius(name="selRadius")
+    each el in [[1,  "ВСЕ"],[0.1,  "11km"], [0.01,  "1 km"], [0.001,  "111 m"]]
+      option(value=el[0] selected=(el[0]==0.01) ) #{el[1]}      
   | FTS: 
   input#input_fts(name='fts', value='', type='text') 
   button(onclick="loadSelectedTopicFts()") Выполнить полнотекстовый поиск    

@@ -49,7 +49,7 @@ function initMap() {
                 // console.log(element);
                 var newDiv = document.createElement("div");
             newDiv.innerHTML = `<div class="claim-panel">
-                <span> ${element.claim_id}</span>
+                <a href="https://vmeste.permkrai.ru/messages/reports/${element.claim_id}" target="_blank"> ${element.claim_id}</a>
                 <span> ${element.create_dt.substring(0, 10)}</span>
                 <div class="tooltip"> Отв. <span class="tooltiptext"> ${element.executor} </span> </div>
                 <div class="tooltip"> Адр. <span class="tooltiptext"> ${element.address}  </span> </div>
@@ -60,15 +60,15 @@ function initMap() {
             });            
         };
 
-        
+        let pobj=get_current_topic_fts();
+        pobj.lat=data.latLng.lat();
+        pobj.lng=data.latLng.lng();
         if(document.getElementById('input_fts').value.length==0) {
-            console.log(' Click %s %s %s ',data.latLng.lat(),data.latLng.lng(),get_current_topic())
-            getClaimsByGeo(data.latLng.lat(),data.latLng.lng(),get_current_topic(), (data) => putData(data));
+            console.log(' Click %o ',pobj)
+            getClaimsByGeo(pobj, (data) => putData(data));
             
         } else {
-            let pobj=get_current_topic_fts();
-            pobj.lat=data.latLng.lat();
-            pobj.lng=data.latLng.lng();
+            
             console.log('FTS click - config %o ',pobj)
             getClaimsByGeoFTS(pobj, (data) => putData(data));
         }
@@ -100,6 +100,8 @@ function get_current_topic_fts() {
     conf_obj.topic = (e.options[e.selectedIndex].value);
     e = document.getElementById('select_month'); 
     conf_obj.month = (e.options[e.selectedIndex].value);
+    e = document.getElementById('select_radius'); 
+    conf_obj.radius = (e.options[e.selectedIndex].value);
     conf_obj.text = document.getElementById('input_fts').value;
 
     console.log("conf_obj %o",conf_obj);
@@ -153,8 +155,8 @@ function getGeoByTopicFts(object,callback) {
     fetchApi(location.origin+'/api/get_geo_by_topic_fts', object,  (pData) => {callback(pData.data) }); 
 }
 
-function getClaimsByGeo(lat,lng,topic,callback) {
-    fetchApi(location.origin+'/api/get_claims_by_geo', {'lat':lat,'lng':lng,'topic':topic},  (pData) => {
+function getClaimsByGeo(object,callback) {
+    fetchApi(location.origin+'/api/get_claims_by_geo', object,  (pData) => {
         callback(pData.data);
     }); 
     }

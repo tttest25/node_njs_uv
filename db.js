@@ -80,8 +80,8 @@ async function get_geo_by_topic_fts(req, res, next) {
 async function get_claims_by_geo(req, res, next) {
   try {
     const data = await db.any(`SELECT claim_id,executor,address,topic,create_dt,executor,claim_text from 
-    public.get_claims_by_geo('((${req.query.lat}, ${req.query.lng}), 0.01)',$1)
-    `,  req.query.topic);
+    public.get_claims_by_geo('((${req.query.lat}, ${req.query.lng}), ${req.query.radius})',$1)
+    `,  [req.query.topic]);
     return res.status(200).json({
       status: 'success',
       data: data,
@@ -118,7 +118,7 @@ async function get_claims_by_geo(req, res, next) {
 async function get_claims_by_geo_fts(req, res, next) {
   try {
     const data = await db.any(`SELECT claim_id,executor,address,topic,create_dt,executor,claim_text from 
-    public.get_claims_by_geo_fts('((${req.query.lat}, ${req.query.lng}), 0.01)',$1,$2,$3)
+    public.get_claims_by_geo_fts('((${req.query.lat}, ${req.query.lng}), ${req.query.radius})',$1,$2,$3)
     `,  [req.query.topic,req.query.text,req.query.month]);
     return res.status(200).json({
       status: 'success',
