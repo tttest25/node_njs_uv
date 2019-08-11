@@ -67,11 +67,11 @@ async function simpleKerberos(token) {
                 return `${kbServer.username}`;
             } else {
                 kbServer.step('').catch(err => {
-                    console.log('----------finish err %o req.id %o kbServer %o', err, req.id, kbServer);
+                    console.log('----------finish err %o  kbServer %o', err, kbServer);
                 });
             }
         }).catch(err => {
-            console.log('----------finish err %o req.id %o kbServer %o', err, req.id, kbServer);
+            console.log('----------finish err %o  kbServer %o', err, kbServer);
             console.trace("Error")
         });
 }
