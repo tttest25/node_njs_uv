@@ -18,11 +18,13 @@ class SimpleKerberosError extends NestedError {
 }
 
 const isWin = (process.platform)==='win32';
-
-
 if (isWin) {
     module.exports.Kerberos = {username:'Eugen'}; 
+    console.log('Windows');
 } else {
+    console.log('Linux');
+}
+
     const kerberos= require('../kerberos');
 
     console.log(`---- Kerberos STARTING SERVER ----`);
@@ -49,7 +51,7 @@ if (isWin) {
     
 
     module.exports.Kerberos = kerberos; 
-}
+
 
 async function simpleKerberos(token) {
     kbServer.step(token)
