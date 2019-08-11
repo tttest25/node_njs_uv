@@ -8,7 +8,7 @@
     "delay": "2500",
     "verbose": true,
     "execMap": {
-        "js": "node --harmony --async-stack-traces --harmony-await-optimization"
+        "js": "node --harmony --async-stack-traces --harmony-await-optimization --experimental-modules"
     },
     "env": {
         "NODE_ENV": "development"
