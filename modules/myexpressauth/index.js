@@ -45,6 +45,12 @@ if (isWin) {
             throw new Error(`Failed kerberos initializeServer ${error}`);
         });
 
+
+    
+
+    module.exports.Kerberos = kerberos; 
+}
+
 async function simpleKerberos(token) {
     kbServer.step(token)
         .then(serverResponse => {
@@ -64,10 +70,8 @@ async function simpleKerberos(token) {
             console.trace("Error")
         });
 }
-    
 
-    module.exports.Kerberos = kerberos; 
-}
+
 
 module.exports = () => composable()
 .use(expressAuthNegotiate())
