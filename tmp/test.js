@@ -5,6 +5,8 @@ const os = require('os');
 const SegfaultHandler = require('segfault-handler');
 
 
+
+
 // environment variables
 const username = process.env.KERBEROS_USERNAME || 'melnikov-ea';
 const password = process.env.KERBEROS_PASSWORD || '';

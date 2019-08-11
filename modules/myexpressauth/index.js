@@ -1,6 +1,6 @@
 'use strict';
 
-import composable from 'composable-middleware';
+const composable = require('composable-middleware');
 import expressAuthNegotiate from 'express-auth-negotiate';
 import NestedError from 'nested-error-stacks';
 
