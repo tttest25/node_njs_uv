@@ -17,6 +17,8 @@ class SimpleKerberosError extends NestedError {
     }
 }
 
+let kbServer=null;
+
 const isWin = (process.platform)==='win32';
 if (isWin) {
     module.exports.Kerberos = {username:'Eugen'}; 
@@ -40,7 +42,8 @@ if (isWin) {
     console.log(`Init kerberos`);
     kerberos.initializeServer("HTTP@sm.gorodperm.ru")
         .then((server) => {
-            module.exports.kbServer = server;
+            kbServer = server;
+            module.exports.kbServer=kbServer;
             console.log(`Kerberos server initialized:`, server);
         })
         .catch((error) => {
