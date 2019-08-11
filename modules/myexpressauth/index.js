@@ -1,8 +1,8 @@
 'use strict';
 
 const composable = require('composable-middleware');
-import expressAuthNegotiate from 'express-auth-negotiate';
-import NestedError from 'nested-error-stacks';
+const expressAuthNegotiate = require('express-auth-negotiate');
+const NestedError = require('nested-error-stacks');
 
 /**
  * Class for Error Kerberos
@@ -67,7 +67,7 @@ async function simpleKerberos(token) {
     module.exports.Kerberos = kerberos; 
 }
 
-export default () => composable()
+module.exports = () => composable()
 .use(expressAuthNegotiate())
 .use((req, res, next) => {
     simpleKerberos(req.auth.token)

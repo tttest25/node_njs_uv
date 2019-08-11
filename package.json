@@ -17,6 +17,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
+    "nested-error-stacks": "^2.1.0",
     "pg-promise": "^8.7.3"
   },
   "devDependencies": {
