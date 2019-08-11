@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var addRequestId = require('express-request-id')();
 
-var myexpressauth = require('./modules/myexpressauth');
+var expressKerberos = require('./modules/myexpressauth');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(addRequestId);
 
-app.use('/', indexRouter);
+app.use('/', expressKerberos(),indexRouter);
 app.use('/users', usersRouter);
 app.use('/map', mapRouter);
 app.use('/api', apiRouter);

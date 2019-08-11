@@ -1,5 +1,5 @@
 var express = require('express')
-var kerberos = require('./kerberos')
+var kerberos = require('../modules/kerberos')
 var addRequestId = require('express-request-id')();
 
 var app = express()

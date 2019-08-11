@@ -1,5 +1,5 @@
 'use strict';
-const kerberos = require('./kerberos');
+const kerberos = require('../modules/kerberos');
 const request = require('request');
 const os = require('os');
 const SegfaultHandler = require('segfault-handler');
