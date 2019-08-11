@@ -1,8 +1,10 @@
 'use strict';
 
 const composable = require('composable-middleware');
-const expressAuthNegotiate = require('express-auth-negotiate');
+const expressAuthNegotiate = require('express-auth-negotiate').default;
 const NestedError = require('nested-error-stacks');
+
+console.log(expressAuthNegotiate);
 
 /**
  * Class for Error Kerberos
