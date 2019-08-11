@@ -1,12 +1,21 @@
 # Проект геоанализ Управляем вместе
 проект для геоанализа управляем вместе
 
-# ChangeLog 
-*   20190801 - Init
-
-
-Deploy
+Запуск
 ------------
+при установки поменять пароль - по умолчанию `mysecretpassword`
+
+## Prerequisites
+ 1. kerberos client install (see bellow krb5)
+ 2. custom module npm kerberos build, not native kerberos (not support node12)
+ 3. custom /etc/krb5.conf , /etc/krb5.keytab
+
+## ChangeLog 
+ *   20190801 - Init
+ *   20190805 - Add SSO support kerberos module
+
+------------
+## Deploy
 ~~~Bash
 git clone https://github.com/tttest25/node_njs_uv.git
 cp .env_example .env
@@ -21,7 +30,9 @@ docker run \
 -it --entrypoint /bin/bash melnikov_ea/node_njs_uv
 
 # run bash in container and run
-npm install
+# !!! + install kerberos !!!
+npm install 
+
 
 #after install node_modules run
 docker run \
@@ -38,9 +49,7 @@ docker run \
 ~~~
 
 
-Запуск
-------------
-при установки поменять пароль - по умолчанию `mysecretpassword`
+
 
 
 ~~~
@@ -50,6 +59,29 @@ http://127.0.0.1:3000/api/get_topics
 http://127.0.0.1:3000/api/get_claims_by_geo?topic=Ямы, выбоины на дороге, тротуаре
 http://127.0.0.1:3000/api/get_claims_by_geo?lat=57.99330304745119&lng=56.19769414257814&topic=Ямы, выбоины на дороге, тротуаре
 ~~~
+
+
+
+Kerberos
+------------
+~~~BASH
+#For install kerberos on OS:
+apt search kerberos
+apt-get install krb5-user
+apt install libkrb5-dev
+apt install krb5-user krb5-config krb5-pkinit
+apt-get install krb5-user libpam-krb5 libpam-ccreds auth-client-config krb5-pkinit
+apt install krb5-multidev
+apt install krb5-multidev libkrad-dev libkrb5-dev
+apt install nodejs
+# kerberos npm - clone branch with node 12 support
+git clone -b NODE-1984/add-node-12-support https://github.com/mongodb-js/kerberos.git
+git branch -a
+ npm run-script 
+
+~~~
+
+
 
 ~~~
 C:\Users\melnikov-ea\Documents\NodeJS\njs_uv>C:\Users\melnikov-ea\AppData\Roaming\npm\express.cmd
