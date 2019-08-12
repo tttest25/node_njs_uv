@@ -57,11 +57,11 @@ kerberos.initializeServer("HTTP@sm.gorodperm.ru")
 module.exports.Kerberos = kerberos;
 
 
-async function simpleKerberos(token,res) {
+async function simpleKerberos(token) {
     kbServer.step(token)
         .then(serverResponse => {
             console.log('-- 1. Kerberos answer %o', { kbServer, serverResponse });
-            res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
+            // res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
             if (kbServer.contextComplete && kbServer.username) {
                 console.log('-- 2.  Auth ok', kbServer.contextComplete);
                 kbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => console.error(' KRB.reset error----catch reset status %o ', err));
