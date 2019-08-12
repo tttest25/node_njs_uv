@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const composable = require('composable-middleware');
 const expressAuthNegotiate = require('express-auth-negotiate').default;
