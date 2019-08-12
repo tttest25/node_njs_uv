@@ -58,7 +58,7 @@ module.exports.Kerberos = kerberos;
 
 function clearKrb(pkbServer) {
     pkbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => {
-        console.log(' KRB.clear ----catch reset status %o ', err);
+        console.log(' KRB.clear ----catch reset status %s',err);
         pkbServer.username = '';
         pkbServer.contextComplete = false;
     });
