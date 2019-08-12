@@ -4,8 +4,6 @@ const composable = require('composable-middleware');
 const expressAuthNegotiate = require('express-auth-negotiate').default;
 const NestedError = require('nested-error-stacks');
 
-console.log(expressAuthNegotiate);
-
 /**
  * Class for Error Kerberos
  */
@@ -19,14 +17,15 @@ class SimpleKerberosError extends NestedError {
 
 let kbServer = null;
 
+// Check platform
 const isWin = (process.platform) === 'win32';
 if (isWin) {
     module.exports.Kerberos = {
         username: 'Eugen'
     };
-    console.log('Windows');
+    console.log('Start on Windows');
 } else {
-    console.log('Linux');
+    console.log('Start on Linux OS');
 }
 
 const kerberos = require('../kerberos');
@@ -58,26 +57,21 @@ kerberos.initializeServer("HTTP@sm.gorodperm.ru")
 module.exports.Kerberos = kerberos;
 
 
-async function simpleKerberos(token) {
+async function simpleKerberos(token,res) {
     kbServer.step(token)
         .then(serverResponse => {
-            console.log('-------3. Kerberos answer %o', {
-                kbServer,
-                serverResponse
-            });
+            console.log('-- 1. Kerberos answer %o', { kbServer, serverResponse });
             res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
             if (kbServer.contextComplete && kbServer.username) {
-                console.log('-----------4.  Auth ok', kbServer.contextComplete);
-                kbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('----------reset status %o ', data)).catch(err => console.error('----------catch reset status %o ', err));
+                console.log('-- 2.  Auth ok', kbServer.contextComplete);
+                kbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => console.error(' KRB.reset error----catch reset status %o ', err));
                 return `${kbServer.username}`;
             } else {
-                kbServer.step('').catch(err => {
-                    console.log('----------finish err %o  kbServer %o', err, kbServer);
-                });
+                kbServer.step('').catch(err => { console.error('-- KRB.auth err %o  kbServer %o', err, kbServer); });
             }
         }).catch(err => {
             // console.log('----------finish err %o  kbServer %o', err, kbServer);
-            console.trace('----------finish err %o  kbServer %o', err, kbServer)
+            console.error(' KRB.step err %o  kbServer %o', err, kbServer)
         });
 }
 
@@ -86,7 +80,7 @@ async function simpleKerberos(token) {
 module.exports = () => composable()
     .use(expressAuthNegotiate())
     .use((req, res, next) => {
-        simpleKerberos(req.auth.token)
+        simpleKerberos(req.auth.token,res)
             .then(username => {
                 req.auth.username = username;
                 next();
