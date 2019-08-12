@@ -3,7 +3,7 @@
   "version": "0.0.16",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/nodemon ./bin/www",
+    "start": "./node_modules/.bin/nodemon ./bin/www.js",
     "test_kerberos": " env KRB5_TRACE=/dev/stdout && ./node_modules/.bin/nodemon ./tmp/test2"
   },
   "dependencies": {
