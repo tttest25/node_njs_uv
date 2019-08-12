@@ -56,6 +56,13 @@ kerberos.initializeServer("HTTP@sm.gorodperm.ru")
 
 module.exports.Kerberos = kerberos;
 
+function clearKrb(pkbServer) {
+    pkbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => {
+        console.log(' KRB.clear ----catch reset status %o ', err);
+        pkbServer.username = '';
+        pkbServer.contextComplete = false;
+    });
+}
 
 async function simpleKerberos(token) {
     kbServer.step(token)
@@ -63,14 +70,17 @@ async function simpleKerberos(token) {
             console.log('-- 1. Kerberos answer %o', { kbServer, serverResponse });
             // res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
             if (kbServer.contextComplete && kbServer.username) {
-                console.log('-- 2.  Auth ok', kbServer.contextComplete);
-                kbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => console.error(' KRB.reset error----catch reset status %o ', err));
-                return `${kbServer.username}`;
+                let userName='';
+                console.log('-- 2.  Auth ok', kbServer.contextComplete,kbServer.username);
+                userName=`${kbServer.username}`
+                clearKrb(kbServer);
+                return userName;
             } else {
-                kbServer.step('').catch(err => { console.error('-- KRB.auth err %o  kbServer %o', err, kbServer); });
+                clearKrb(kbServer);
             }
         }).catch(err => {
             // console.log('----------finish err %o  kbServer %o', err, kbServer);
+            clearKrb(kbServer);
             console.error(' KRB.step err %o  kbServer %o', err, kbServer)
         });
 }
