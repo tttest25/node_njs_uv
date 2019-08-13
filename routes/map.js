@@ -4,7 +4,8 @@ const { version } = require('../package.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('map', { title: `Heat - ${version}` });
+  let name = req.auth.username || 'Anonymous';
+  res.render('map', { title: `Heat - ${version} - ${name}` });
 });
 
 module.exports = router;
