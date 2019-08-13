@@ -93,6 +93,7 @@ module.exports = () => composable()
         simpleKerberos(req.auth.token,res)
             .then(username => {
                 req.auth.username = username;
+                console.log('Auth id',req.id);
                 next();
             }, next);
     });
