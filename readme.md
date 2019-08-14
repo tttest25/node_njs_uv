@@ -3,7 +3,10 @@
 
 Запуск
 ------------
-при установки поменять пароль - по умолчанию `mysecretpassword`
+перед сборкой выполнить
+1. при установки поменять пароль - по умолчанию `mysecretpassword`
+2. поменять ./.env 
+3. скопировать keytab в /etc/krb5.keytab
 
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
@@ -24,6 +27,7 @@ docker build -t melnikov_ea/node_njs_uv .
 # for initial install
 docker run \
 -p 3000:3000 \
+-p 9229:9229 \
 -v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
 --name "node_njs_uv" \
@@ -37,6 +41,7 @@ npm install
 #after install node_modules run
 docker run \
 -p 3000:3000 \
+-p 9229:9229 \
 -v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
 --name "node_njs_uv" \
@@ -67,11 +72,9 @@ Kerberos
 ~~~BASH
 #For install kerberos on OS:
 apt search kerberos
-apt-get install krb5-user
-apt install libkrb5-dev
 apt install krb5-user krb5-config krb5-pkinit
-apt-get install krb5-user libpam-krb5 libpam-ccreds auth-client-config krb5-pkinit
-apt install krb5-multidev
+apt install libkrb5-dev
+apt install libpam-krb5 libpam-ccreds krb5-pkinit
 apt install krb5-multidev libkrad-dev libkrb5-dev
 apt install nodejs
 # kerberos npm - clone branch with node 12 support
