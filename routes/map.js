@@ -5,7 +5,7 @@ const { version } = require('../package.json');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let name = req.auth.username || 'Anonymous';
-  console.log('Auth routh id %s %o',req.id,req);
+  // console.log('Auth routh id %s %o',req.id,req);
   res.render('map', { title: `Heat - ${version} - ${name}` });
 });
 

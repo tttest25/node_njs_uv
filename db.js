@@ -4,12 +4,16 @@ var pgp = require("pg-promise")(/*options*/);
 
 var db = pgp(process.env.DB_PG_DSN);
 
+const cLogger = require('./log');
+const logger = cLogger.createChildLogger({module: 'db'})
+
+
 db.one("SELECT  version() as version,$1 AS value", 123)
     .then(function (data) {
-        console.log("DATA:", data.version, data.value);
+        logger.debug("DATA:", data.version, data.value);
     })
     .catch(function (error) {
-        console.log("ERROR:", error);
+        logger.error("ERROR:", error);
     });
 
 

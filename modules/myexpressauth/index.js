@@ -4,6 +4,9 @@ const composable = require('composable-middleware');
 const expressAuthNegotiate = require('express-auth-negotiate').default;
 const NestedError = require('nested-error-stacks');
 
+const cLogger = require('../../log');
+const logger = cLogger.createChildLogger({module: 'myexpressauth'})
+
 /**
 * Class for Error Kerberos
 */
@@ -23,32 +26,32 @@ if (isWin) {
     module.exports.Kerberos = {
         username: 'Eugen'
     };
-    console.log('Start on Windows');
+    logger.debug('Start on Windows');
 } else {
-    console.log('Start on Linux OS');
+    logger.error('Start on Linux OS');
 }
 
 const kerberos = require('../kerberos');
 
-console.log(`---- Kerberos STARTING SERVER ----`);
+logger.debug(`---- Kerberos STARTING SERVER ----`);
 kerberos.principalDetails('HTTP', "sm.gorodperm.ru")
     .then((details) => {
-        console.log("Principal:", details);
+        logger.debug("Principal:", details);
     })
     .catch(error => {
-        console.log("Failed to read principal", error);
-        throw new SimpleKerberosError('simpleKerberos Failed to read principal stage', err);
+        logger.error("Failed to read principal", error);
+        throw new SimpleKerberosError('simpleKerberos Failed to read principal stage', error);
     });
 
-console.log(`Init kerberos`);
+logger.debug(`Init kerberos`);
 kerberos.initializeServer("HTTP@sm.gorodperm.ru")
     .then((server) => {
         kbServer = server;
         module.exports.kbServer = kbServer;
-        console.log(`Kerberos server initialized:`, server);
+        logger.debug(`Kerberos server initialized:`, server);
     })
     .catch((error) => {
-        throw new SimpleKerberosError('simpleKerberos Failed kerberos initializeServer', err);
+        throw new SimpleKerberosError('simpleKerberos Failed kerberos initializeServer', error);
     });
 
 
@@ -57,8 +60,8 @@ kerberos.initializeServer("HTTP@sm.gorodperm.ru")
 module.exports.Kerberos = kerberos;
 
 function clearKrb(pkbServer) {
-    pkbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => {
-        console.log(' KRB.clear ----catch reset status %s',err);
+    pkbServer.step('YIIIIQYGKwYBBQUCo').then(data => logger.debug('3. ---reset status %o ', data)).catch(err => {
+        logger.info(' KRB.clear ----catch reset status %s',err);
         pkbServer.username = '';
         pkbServer.contextComplete = false;
     });
@@ -68,11 +71,11 @@ async function simpleKerberos(token) {
     try {
     let username = await kbServer.step(token)
         .then(serverResponse => {
-            console.log('-- 1. Kerberos answer %o', { kbServer, serverResponse });
+            logger.debug('-- 1. Kerberos answer %o', { kbServer, serverResponse });
             // res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
             if (kbServer.contextComplete && kbServer.username) {
                 let userName='';
-                console.log('-- 2.  Auth ok', kbServer.contextComplete,kbServer.username);
+                logger.info('-- 2.  Auth ok', kbServer.contextComplete,kbServer.username);
                 userName=`${kbServer.username}`
                 clearKrb(kbServer);
                 return userName;
@@ -82,7 +85,7 @@ async function simpleKerberos(token) {
                 throw new SimpleKerberosError(errStr, new Error('Not authorized'));
             }
         }).catch(err => {
-            // console.log('----------finish err %o  kbServer %o', err, kbServer);
+            // logger.debug('----------finish err %o  kbServer %o', err, kbServer);
             clearKrb(kbServer);
             throw new SimpleKerberosError('simpleKerberos on stage "STEP" error ', err);
         });
@@ -101,7 +104,7 @@ module.exports = () => composable()
         simpleKerberos(req.auth.token)
             .then(username => {
                 req.auth.username = username;
-                console.log('Auth id - URL %s  ID %s Username %s ',req.url, req.id,username);
+                logger.debug('Auth id - URL %s  ID %s Username %s ',req.url, req.id,username);
                 next();
             }, next);
     });

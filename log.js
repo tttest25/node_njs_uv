@@ -1,7 +1,19 @@
-import * as pino from "pino";
-// import { APP_ID, LOG_LEVEL } from "./Config";
+'use strict';
+const clsCreateLogger = require('./modules/logger/logger.js');
 
-export const logger = pino({
-name: 'njs_uv',
-level: 'debug'
-});
+let logger = clsCreateLogger({level: 'trace'});
+
+function createLogger(...params) {
+    logger = clsCreateLogger(params)
+    return logger;
+}
+
+function createChildLogger(param) {
+    return logger.child(param);
+}
+
+module.exports = {
+    createLogger,
+    createChildLogger,
+    logger
+};

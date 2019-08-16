@@ -7,6 +7,7 @@
 1. при установки поменять пароль - по умолчанию `mysecretpassword`
 2. поменять ./.env 
 3. скопировать keytab в /etc/krb5.keytab
+4. если разработка ведется не на хосте - исправить C:\Windows\System32\drivers\etc\hosts  - на что то `10.59.20.96 sm.gorodperm.ru`
 
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
@@ -16,6 +17,7 @@
 ## ChangeLog 
  *   20190801 - Init
  *   20190805 - Add SSO support kerberos module
+ *   20190806 - Add  "ephemeral" docker and log with CLS (on each cls) + add docker run log rotate
 
 ------------
 ## Deploy
@@ -30,12 +32,12 @@ docker run \
 -p 9229:9229 \
 -v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
+--log-driver json-file --log-opt max-size=2m \
 --name "node_njs_uv" \
 -it --entrypoint /bin/bash melnikov_ea/node_njs_uv
 
 # run bash in container and run
-# !!! + install kerberos !!!
-npm install 
+
 
 
 #after install node_modules run
@@ -44,13 +46,13 @@ docker run \
 -p 9229:9229 \
 -v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
+--log-driver json-file --log-opt max-size=2m \
 --name "node_njs_uv" \
 -d melnikov_ea/node_njs_uv
  
 
 --rm \
--d melnikov_ea/node_njs_uv \
--w "/home/node/app" \
+-w "/home/node/app" 
 ~~~
 
 
@@ -64,6 +66,14 @@ http://127.0.0.1:3000/api/get_topics
 http://127.0.0.1:3000/api/get_claims_by_geo?topic=Ямы, выбоины на дороге, тротуаре
 http://127.0.0.1:3000/api/get_claims_by_geo?lat=57.99330304745119&lng=56.19769414257814&topic=Ямы, выбоины на дороге, тротуаре
 ~~~
+
+
+
+Logging
+------------
+https://habr.com/ru/post/442392/ - почитать про подход
+https://github.com/keenondrums/cls-proxify - проект про прокси CLS
+https://itnext.io/give-your-logs-more-context-7b43ea6b4ae6 - как нужно писать
 
 
 

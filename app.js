@@ -4,8 +4,8 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var addRequestId = require('express-request-id')();
+const cuid = require('cuid');
+const cLogger = require('./log');
 
 var expressKerberos = require('./modules/myexpressauth');
 
@@ -14,19 +14,35 @@ var usersRouter = require('./routes/users');
 var mapRouter = require('./routes/map');
 var apiRouter = require('./routes/api');
 
-var app = express();
 
+/**
+ * Function set id to context logger
+  */
+function clsRequestId(namespace, generateId) {
+  return (req, res, next) => {
+      const requestId = req.get('X-Request-Id') || generateId();
+      res.set('X-Request-Id', requestId);
+
+      namespace.run(() => {
+          namespace.set('requestId', requestId);
+          next();
+      })
+  }
+}
+
+var app = express();
+const logger = cLogger.logger;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+// app.use(logger('dev'));
+app.use(clsRequestId(logger.cls, cuid));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(addRequestId);
 
 app.use('/', expressKerberos(),indexRouter);
 app.use('/users', usersRouter);
@@ -51,6 +67,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-console.log('Start - version %s',process.env.npm_package_version);
+ logger.info('Start - version %s',process.env.npm_package_version);
 
 module.exports = app;
