@@ -1,5 +1,5 @@
 'use strict';
-
+const { version } = require('./package.json');
 var pgp = require("pg-promise")(/*options*/);
 
 var db = pgp(process.env.DB_PG_DSN);
@@ -8,7 +8,7 @@ const cLogger = require('./log');
 const logger = cLogger.createChildLogger({module: 'db'})
 
 
-db.one("SELECT  version() as version,$1 AS value", 123)
+db.one("SELECT  version() as version,$1 AS value", version)
     .then(function (data) {
         logger.debug("DATA:", data.version, data.value);
     })
@@ -17,7 +17,31 @@ db.one("SELECT  version() as version,$1 AS value", 123)
     });
 
 
-    
+/**
+ * webApiSql -> Function for call WebAPi
+ * @param {*} req - request
+ * @param {*} res - response
+ * @param {*} next - next callback
+ */
+function webApiSql(req, res, next) {
+  var pJson = JSON.stringify(req.body);
+  return db.any('SELECT custm.web_api_sql($1)',pJson)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'topics'
+        });
+    })
+    .catch(function (err) {
+       return next(err);
+    //   // throw new Error(err);
+    })
+    ;
+}
+
+
 function getSingle(req, res, next) {
   var claimID = parseInt(req.params.id);
   db.one('SELECT * FROM public.uv_data where claim_id = $1', claimID)
@@ -138,6 +162,7 @@ async function get_claims_by_geo_fts(req, res, next) {
 
 
 module.exports = {
+  webApiSql:webApiSql,
   getSingle: getSingle,
   get_topics: get_topics,
   get_geo_by_topic: get_geo_by_topic,

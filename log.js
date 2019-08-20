@@ -1,7 +1,8 @@
 'use strict';
 const clsCreateLogger = require('./modules/logger/logger.js');
 
-let logger = clsCreateLogger({level: 'trace'});
+const LOG_LEVEL=process.env.LOG_LEVEL || 'info';
+let logger = clsCreateLogger({level: LOG_LEVEL});
 
 function createLogger(...params) {
     logger = clsCreateLogger(params)

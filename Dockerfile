@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get -yqq install   \
 krb5-user krb5-config krb5-pkinit \
-libkrb5-dev jq\
+libkrb5-dev jq \
 libpam-krb5 libpam-ccreds krb5-pkinit \
 krb5-multidev libkrad-dev libkrb5-dev && \
 apt-get -yqq clean && \

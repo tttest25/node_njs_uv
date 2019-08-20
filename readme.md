@@ -9,6 +9,10 @@
 3. скопировать keytab в /etc/krb5.keytab
 4. если разработка ведется не на хосте - исправить C:\Windows\System32\drivers\etc\hosts  - на что то `10.59.20.96 sm.gorodperm.ru`
 
+## Logs
+npm start | jq -crR 'fromjson? | select(type == "object")'
+
+
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
  2. custom module npm kerberos build, not native kerberos (not support node12)
@@ -18,6 +22,7 @@
  *   20190801 - Init
  *   20190805 - Add SSO support kerberos module
  *   20190806 - Add  "ephemeral" docker and log with CLS (on each cls) + add docker run log rotate
+ *   20190820 - Add auth / log / api db
 
 ------------
 ## Deploy
