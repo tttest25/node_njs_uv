@@ -235,7 +235,7 @@ function fetchApi(pUrl, params={}, callback) {
     var url = new URL(pUrl);
          //,params = {lat:35.696233, long:139.570431};
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    fetch(url,{method: 'GET', credentials: 'include'})
+    fetch(url,{ credentials: 'include'})
     .then(response => response.json())
     .then(data =>callback(data))    
 }
@@ -246,7 +246,7 @@ async function fetchApiAsync(pUrl, params={}) {
         var url = new URL(pUrl);
             //,params = {lat:35.696233, long:139.570431};
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-        const response = await fetch(url);
+        const response = await fetch(url,{ credentials: 'include'});
         var json;
         if(response.ok) {
             json = await  response.json();
