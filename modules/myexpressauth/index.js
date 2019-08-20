@@ -104,6 +104,7 @@ module.exports = () => composable()
         simpleKerberos(req.auth.token)
             .then(username => {
                 req.auth.username = username;
+                req.session.username = username;
                 logger.debug('Auth id - URL %s  ID %s Username %s ',req.url, req.id,username);
                 next();
             }, next);

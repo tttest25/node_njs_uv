@@ -18,7 +18,7 @@ var authRouter = require('./routes/auth');
 
 
 /**
- * Function set id to context logger
+ * Logger Function set id to context logger
   */
 function clsRequestId(namespace, generateId) {
   return (req, res, next) => {
@@ -29,6 +29,27 @@ function clsRequestId(namespace, generateId) {
           namespace.set('requestId', requestId);
           next();
       })
+  }
+}
+
+// check user and set user
+function loadUser(req, res, next) {
+  logger.info(`loadUser - req. auth ${req.auth} req.session ${JSON.stringify(req.session)}`);
+  if (req.session.username) {
+    req.auth={};
+    req.auth.username=req.session.username;
+    next();
+    /*User.findById(req.session.user_id, function(user) {
+      if (user) {
+        req.currentUser = user;
+        next();
+      } else {
+        res.redirect('/sessions/new');
+      }
+    });
+    */
+  } else {
+    res.redirect('/login');
   }
 }
 
@@ -51,9 +72,12 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/login',authRouter.login);
 
-app.use('/', expressKerberos(),indexRouter);
+app.use('/login', expressKerberos(), authRouter.login);
+app.use('/logout', authRouter.logout);
+
+
+app.use('/', loadUser, indexRouter);
 
 app.use('/users', usersRouter);
 app.use('/map', mapRouter);

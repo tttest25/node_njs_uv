@@ -9,4 +9,10 @@ const loginRouter = router.get('/', function(req, res, next) {
   res.render('login', { title: `Login - ${version}` });
 });
 
+const logoutRouter = router.get('/', function(req, res, next) {
+  // console.log('Auth routh id %s %o',req.id,req);
+  res.render('logout');
+});
+
 module.exports.login = loginRouter;
+module.exports.logout = logoutRouter;
