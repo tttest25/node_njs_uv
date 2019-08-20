@@ -7,6 +7,7 @@ const NestedError = require('nested-error-stacks');
 const cLogger = require('../../log');
 const logger = cLogger.createChildLogger({module: 'myexpressauth'})
 
+
 /**
 * Class for Error Kerberos
 */
@@ -97,15 +98,42 @@ async function simpleKerberos(token) {
 }
 
 
+// example KerberosCheckPassword = (username, password) 
+//
 
-module.exports = () => composable()
-    .use(expressAuthNegotiate())
-    .use((req, res, next) => {
-        simpleKerberos(req.auth.token)
-            .then(username => {
-                req.auth.username = username;
-                req.session.username = username;
-                logger.debug('Auth id - URL %s  ID %s Username %s ',req.url, req.id,username);
-                next();
-            }, next);
-    });
+
+const  myKerberosCheckPassword = ((req, res, next) => {
+    let username = req.body.username || 'def';
+    let password = req.body.password || 'def';
+    return kerberos.checkPassword(username, password, 'HTTP/sm.gorodperm.ru','GORODPERM.RU')
+    .then((data) => {
+        logger.info('Login/Pass - success  ',username,data);
+        req.auth = req.auth || {};
+        req.session = req.session || {};
+        req.auth.username = username;
+        req.session.username = username;
+        next();
+    })
+    .catch((err) => {
+        logger.error('Login/Pass - error ',JSON.stringify(err));
+        next();
+    });   
+});
+
+
+
+const myKerberos = () => composable()
+.use(expressAuthNegotiate())
+.use((req, res, next) => {
+    simpleKerberos(req.auth.token)
+        .then(username => {
+            req.auth.username = username;
+            req.session.username = username;
+            logger.debug('Auth id - URL %s  ID %s Username %s ',req.url, req.id,username);
+            next();
+        }, next);
+});
+
+
+module.exports.myKerberos = myKerberos;
+module.exports.myKerberosCheckPassword = myKerberosCheckPassword;

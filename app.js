@@ -34,7 +34,7 @@ function clsRequestId(namespace, generateId) {
 
 // check user and set user
 function loadUser(req, res, next) {
-  logger.info(`loadUser - req. auth ${req.auth} req.session ${JSON.stringify(req.session)}`);
+  logger.info(`loadUser - req. auth ${req.auth} req.session ${req.session.username}`);
   if (req.session.username) {
     req.auth={};
     req.auth.username=req.session.username;
@@ -49,7 +49,7 @@ function loadUser(req, res, next) {
     });
     */
   } else {
-    res.redirect('/login');
+    res.redirect('/kerberos');
   }
 }
 
@@ -74,7 +74,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/login', authRouter.login);
-app.use('/kerberos', expressKerberos(), function (req, res, next) {res.render('login');});
+app.use('/kerberos', expressKerberos.myKerberos(), function (req, res, next) {res.redirect('/');});
 app.use('/logout', authRouter.logout);
 
 
@@ -95,6 +95,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  logger.error('Error',err);
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

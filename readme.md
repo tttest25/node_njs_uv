@@ -12,6 +12,9 @@
 ## Logs
 npm start | jq -crR 'fromjson? | select(type == "object")'
 
+## Autocannon
+./node_modules/.bin/autocannon -c 100 -d 5 -p 10 http://127.0.0.1:3000
+
 
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
