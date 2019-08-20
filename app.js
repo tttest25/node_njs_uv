@@ -73,7 +73,8 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/login', expressKerberos(), authRouter.login);
+app.use('/login', authRouter.login);
+app.use('/kerberos', expressKerberos(), function (req, res, next) {res.render('login');});
 app.use('/logout', authRouter.logout);
 
 
