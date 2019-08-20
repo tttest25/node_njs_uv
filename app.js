@@ -34,7 +34,7 @@ function clsRequestId(namespace, generateId) {
 
 // check user and set user
 function loadUser(req, res, next) {
-  logger.info(`loadUser - req. auth ${req.auth} req.session ${req.session.username}`);
+  logger.info(`loadUser - req.session.id ${req.session.id} req.session.username ${req.session.username}`);
   if (req.session.username) {
     req.auth={};
     req.auth.username=req.session.username;
