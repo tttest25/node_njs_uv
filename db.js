@@ -25,12 +25,12 @@ db.one("SELECT  version() as version,$1 AS value", version)
  */
 function webApiSql(req, res, next) {
   var pJson = JSON.stringify(req.body);
-  return db.any('SELECT custm.web_api_sql($1)',pJson)
+  return db.one('SELECT * from custm.web_api_sql($1)',pJson)
     .then(function (data) {
       res.status(200)
         .json({
           status: 'success',
-          data: data,
+          data: data.web_api_sql,
           message: 'topics'
         });
     })

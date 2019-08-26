@@ -1,11 +1,11 @@
 {
   "name": "njs-uv",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./bin/www.js",
     "test_kerberos": " env KRB5_TRACE=/dev/stdout && ./node_modules/.bin/nodemon ./tmp/test2",
-    "start-log":"npm start | jq -crR 'fromjson? | select(type == \"object\")'"
+    "start-log": "npm start | jq -crR 'fromjson? | select(type == \"object\")'"
   },
   "dependencies": {
     "cls-hooked": "^4.2.2",
@@ -24,7 +24,8 @@
     "morgan": "~1.9.1",
     "nested-error-stacks": "^2.1.0",
     "pg-promise": "^8.7.3",
-    "pino": "^5.13.2"
+    "pino": "^5.13.2",
+    "pino-socket": "^2.0.0"
   },
   "devDependencies": {
     "autocannon": "^4.0.0",

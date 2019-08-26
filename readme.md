@@ -1,7 +1,11 @@
 # Проект геоанализ Управляем вместе
 проект для геоанализа управляем вместе
 
-Запуск
+
+## TODO
+1. idiv - с задачами авторизации 
+
+##Запуск
 ------------
 перед сборкой выполнить
 1. при установки поменять пароль - по умолчанию `mysecretpassword`
@@ -15,6 +19,8 @@ npm start | jq -crR 'fromjson? | select(type == "object")'
 ## Autocannon
 ./node_modules/.bin/autocannon -c 100 -d 5 -p 10 http://127.0.0.1:3000
 
+## Send to Logstash
+npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
 
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
@@ -26,6 +32,7 @@ npm start | jq -crR 'fromjson? | select(type == "object")'
  *   20190805 - Add SSO support kerberos module
  *   20190806 - Add  "ephemeral" docker and log with CLS (on each cls) + add docker run log rotate
  *   20190820 - Add auth / log / api db
+ *   20190826 - Move to postgre API and json params
 
 ------------
 ## Deploy
