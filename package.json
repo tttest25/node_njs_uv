@@ -10,6 +10,7 @@
   "dependencies": {
     "cls-hooked": "^4.2.2",
     "composable-middleware": "^0.3.0",
+    "connect-pg-simple": "^6.0.1",
     "cookie-parser": "~1.4.4",
     "cuid": "^2.1.6",
     "debug": "~2.6.9",
@@ -20,12 +21,13 @@
     "express-request-id": "^1.4.1",
     "express-session": "^1.16.2",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "nested-error-stacks": "^2.1.0",
     "pg-promise": "^8.7.3",
     "pino": "^5.13.2",
-    "pino-socket": "^2.0.0"
+    "pino-socket": "^2.0.0",
+    "pino-std-serializers": "^2.4.2",
+    "pug": "^2.0.4"
   },
   "devDependencies": {
     "autocannon": "^4.0.0",

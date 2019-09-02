@@ -5,7 +5,7 @@ var pgp = require("pg-promise")(/*options*/);
 var db = pgp(process.env.DB_PG_DSN);
 
 const cLogger = require('./log');
-const logger = cLogger.createChildLogger({module: 'db'})
+const logger = cLogger.createChildLogger({module: 'db.js'})
 
 
 db.one("SELECT  version() as version,$1 AS value", version)
@@ -17,28 +17,49 @@ db.one("SELECT  version() as version,$1 AS value", version)
     });
 
 
+
 /**
- * webApiSql -> Function for call WebAPi
+* SessionCreate -> create 
+* @param {*} req - request
+* @param {*} res - response
+* @param {*} next - next callback
+*/
+async function SessionCreate(pLogin, pPassword, pSession) {
+  try {
+    const data = await db.one('SELECT * from webapi.SessionCreate(${pLogin},${pPassword},${pSession})', { pLogin, pPassword, pSession })
+    let responseTime = Date.now() - res[cLogger.startTime];
+    logger.debug({responseTime},`DB:SessionCreate:login ${pLogin} time ${pSession}`);
+    return data;
+  } catch (error) {
+    error.message = "db.js:SessionCreate error " + error.message || '';
+    // throw (error);
+    throw error;
+  }
+}
+
+/**
+ * webApiSql -> Function for call WebAPi 
  * @param {*} req - request
  * @param {*} res - response
  * @param {*} next - next callback
  */
-function webApiSql(req, res, next) {
-  var pJson = JSON.stringify(req.body);
-  return db.one('SELECT * from custm.web_api_sql($1)',pJson)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data.web_api_sql,
-          message: 'topics'
-        });
-    })
-    .catch(function (err) {
-       return next(err);
-    //   // throw new Error(err);
-    })
-    ;
+async function webApiSql(req, res, next) {
+  try {
+    let pJson = JSON.stringify(req.body);
+    const data = await db.one('SELECT * from custm.web_api_sql($1)', pJson)
+    let responseTime = Date.now() - res[cLogger.startTime];
+    logger.debug({responseTime},`DB:webApiSql:${req.body.func} time ${responseTime}ms`);
+    res.status(200)
+      .json({
+        status: 'success',
+        data: data.web_api_sql,
+        message: 'topics'
+      });
+  } catch (error) {
+    error.message = "db.js:webApiSql error";
+    // throw (error);
+    return next(error);
+  }
 }
 
 
@@ -60,6 +81,7 @@ function getSingle(req, res, next) {
 
 
 function get_topics(req, res, next) {
+  // logger.debug("DB:get_topics:");
   db.any('select * from public.get_topics()')
     .then(function (data) {
       res.status(200)
@@ -162,7 +184,10 @@ async function get_claims_by_geo_fts(req, res, next) {
 
 
 module.exports = {
-  webApiSql:webApiSql,
+  db: db,
+  pgPool: db.$pool,
+  SessionCreate: SessionCreate,
+  webApiSql: webApiSql,
   getSingle: getSingle,
   get_topics: get_topics,
   get_geo_by_topic: get_geo_by_topic,

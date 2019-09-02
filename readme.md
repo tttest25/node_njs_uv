@@ -3,7 +3,7 @@
 
 
 ## TODO
-1. idiv - с задачами авторизации 
+1. 
 
 ##Запуск
 ------------
@@ -15,12 +15,14 @@
 
 ## Logs
 npm start | jq -crR 'fromjson? | select(type == "object")'
+## Send to Logstash
+npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
+
 
 ## Autocannon
 ./node_modules/.bin/autocannon -c 100 -d 5 -p 10 http://127.0.0.1:3000
 
-## Send to Logstash
-npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
+
 
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
@@ -33,6 +35,7 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20190806 - Add  "ephemeral" docker and log with CLS (on each cls) + add docker run log rotate
  *   20190820 - Add auth / log / api db
  *   20190826 - Move to postgre API and json params
+ *   20190828 - Fix login + logging 
 
 ------------
 ## Deploy
@@ -145,6 +148,14 @@ C:\Users\melnikov-ea\Documents\NodeJS\njs_uv>C:\Users\melnikov-ea\AppData\Roamin
 Помощь по коду
 ------------
 ~~~
+-- SQL injection , как фильтровать строки если нет выбора
+1. filter es6 example
+console.log([...`Robert'); DROP TABLE Students;--`].filter( e => (   (e.toUpperCase() != e.toLowerCase() || isFinite(e) || '_='.includes(e))) && e!=' ').join(''));  
+2. regexp
+`Robert'); DROP TABLE Students;--`.replace(/[^\d\w.]+/gm,'')
+
+
+
 handle failed async request - https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
 Async Await - https://medium.com/@stasonmars/%D0%B2%D1%81%D0%B5%CC%88-%D1%87%D1%82%D0%BE-%D0%BD%D1%83%D0%B6%D0%BD%D0%BE-%D0%B7%D0%BD%D0%B0%D1%82%D1%8C-%D0%BE%D0%B1-async-await-%D1%86%D0%B8%D0%BA%D0%BB%D1%8B-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8C-%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%B2-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-76dde2cb6949
 Fetch:Common mistake fetch  - https://medium.com/cameron-nokes/4-common-mistakes-front-end-developers-make-when-using-fetch-1f974f9d1aa1

@@ -5,10 +5,14 @@ var express = require('express');
 var path = require('path');
 // var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var pgSession = require('connect-pg-simple')(session);
+const {db} = require('./db')
 const cuid = require('cuid');
 const cLogger = require('./log');
 
 var expressKerberos = require('./modules/myexpressauth');
+
+const {SessionCreate} = require('./db');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -24,9 +28,14 @@ function clsRequestId(namespace, generateId) {
   return (req, res, next) => {
       const requestId = req.get('X-Request-Id') || generateId();
       res.set('X-Request-Id', requestId);
+      
+      namespace.bindEmitter(req);
+      namespace.bindEmitter(res);
 
       namespace.run(() => {
+          req.log=res.log=logger;
           namespace.set('requestId', requestId);
+          logger.trace({requestId,url: req.url},'--- NameSpace-run set request ID');
           next();
       })
   }
@@ -34,10 +43,12 @@ function clsRequestId(namespace, generateId) {
 
 // check user and set user
 function loadUser(req, res, next) {
-  logger.info(`loadUser - req.session.id ${req.session.id} req.session.username ${req.session.username}`);
+  logger.trace(logger.cls.active,'LoadUser - middleware - Loggerclsactive');
+  // logger.info(`CheckUser - req.session.username ${req.session.username} req.session.id ${req.session.id}  'X-Request-Id' ${res.get('X-Request-Id')}`);
   if (req.session.username) {
     req.auth={};
     req.auth.username=req.session.username;
+    logger.cls.set('sessionID', req.session.id);
     next();
     /*User.findById(req.session.user_id, function(user) {
       if (user) {
@@ -49,32 +60,41 @@ function loadUser(req, res, next) {
     });
     */
   } else {
-    res.redirect('/kerberos');
+    res.redirect('/login');
   }
 }
 
 var app = express();
-const logger = cLogger.logger;
+// const logger = cLogger.logger;
+const logger = cLogger.createChildLogger({module: 'app.js'})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // app.use(logger('dev'));
-app.use(clsRequestId(logger.cls, cuid));
+app.use(clsRequestId(logger.cls, cuid)); // Create  Continuation-Local Storage to store data in session in threads 
+app.use(cLogger.loggingMiddleware); // middleware for loggin 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 app.use(session({
-  secret: 'example', // change to environment
+  store: new pgSession({
+    //pool : pgPool,                // Connection pool
+    pgPromise : db,
+    tableName : 'web_sessions',   // Use another table-name than the default "session" one
+    schemaName: 'webapi',
+  }),
+  secret: process.env.COOKIE_SECRET,
   resave: false,
-  saveUnitialized: true
-}));
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+})
+);
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/login', authRouter.login);
-app.use('/kerberos', expressKerberos.myKerberos(), function (req, res, next) {res.redirect('/');});
+app.use('/kerberos', expressKerberos.myKerberos(), function (req, res, next) { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
 app.use('/logout', authRouter.logout);
 
 
