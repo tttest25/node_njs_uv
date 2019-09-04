@@ -3,7 +3,7 @@
 
 
 ## TODO
-1. 
+1. add ip to session db in meta
 
 ##Запуск
 ------------

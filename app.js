@@ -6,13 +6,13 @@ var path = require('path');
 // var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var pgSession = require('connect-pg-simple')(session);
-const {db} = require('./db')
+const {db,SessionCreate} = require('./db')
 const cuid = require('cuid');
 const cLogger = require('./log');
 
-var expressKerberos = require('./modules/myexpressauth');
+const { version } = require('./package.json');
 
-const {SessionCreate} = require('./db');
+var expressKerberos = require('./modules/myexpressauth');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -92,9 +92,9 @@ app.use(session({
 );
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.use('/login', authRouter.login);
-app.use('/kerberos', expressKerberos.myKerberos(), function (req, res, next) { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
+app.get('/login', (req, res, next) => { res.render('login', { title: `Login - ${version}` }) });
+app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
+app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
 app.use('/logout', authRouter.logout);
 
 

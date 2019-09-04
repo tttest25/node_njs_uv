@@ -18,7 +18,13 @@ function initMap() {
     add_info('Successfully loaded');
 
     select_topic_clear();
-    fetchApiAsync(location.origin+'/api/get_topics', {}).then((data) => {fill_topic(data.data) });
+    // move to new version
+    // fetchApiAsync(location.origin+'/api/get_topics', {}).then((data) => {fill_topic(data.data) });
+
+    getDataApi({func:"uvdata.uv_data_get_topics",args:[]},(data) => { 
+        fill_topic(data.data)
+        console.log('Ok'); 
+    });
     
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: getPoints(),
@@ -125,7 +131,7 @@ function loadPrevWeek(pWeek=0) {
 /** Get claims by week pWeek ago */
 function getClaimsWeek(pWeek) {
         clearInfo();
-        getDataApi({func:"public.get_claims_week",args:[pWeek],sess_id:"2342234"},(data) => { 
+        getDataApi({func:"public.get_claims_week",args:[pWeek]},(data) => { 
             mapSetHeatMap(data.data||[]);
             add_info('getClaimsWeek Тема-'+'get_claims_week' +'( '+gpoints.length + ' )');
             console.log('Ok'); 
@@ -148,8 +154,8 @@ function loadGeoData(pClick = null,callback) {
 /** Get claims by topic */
 function loadGeoDataApi(pClick = null,callback) {
     let pCfg =get_params_json(pClick);
-    getDataApi({func:"public.uv_data_get_claims",args:[`'${JSON.stringify(pCfg)}'`],sess_id:"2342234"},(data) => { 
-        console.log('Load api success %o',pCfg); 
+    getDataApi({func:"uvdata.uv_data_get_claims",args:pCfg},(data) => { 
+        console.log('Load api success %o',{func:"uvdata.uv_data_get_claims",args:pCfg}); 
         data.cfg = pCfg;
         callback(data);
     });
@@ -161,7 +167,7 @@ function loadGeoDataApi(pClick = null,callback) {
 */
 function loadGeoDataFts(pObject) {
     clearInfo();
-    getDataApi({func:"public.get_claims_by_topic_fts",args:[`'${pObject.topic}'`,`'${pObject.text}'`,`'${pObject.month}'`],sess_id:"2342234"},(data) => { 
+    getDataApi({func:"public.get_claims_by_topic_fts",args:[`'${pObject.topic}'`,`'${pObject.text}'`,`'${pObject.month}'`]},(data) => { 
     // getGeoByTopicFts(pObject,(data) => { 
         mapSetHeatMap(data.data||[]);
         add_info('loadGeoDataFts Тема-'+pObject.topic +'( '+gpoints.length + ' )');
@@ -172,14 +178,14 @@ function loadGeoDataFts(pObject) {
 
 /** Click on map without FTS */
 function getClaimsByGeo(pobject,callback) {
-    getDataApi({func:"public.get_claims_by_geo",args:[`'((${pobject.lat}, ${pobject.lng}), ${pobject.radius})'`,`'${pobject.topic}'`],sess_id:"2342234"},(pData) => { 
+    getDataApi({func:"public.get_claims_by_geo",args:[`'((${pobject.lat}, ${pobject.lng}), ${pobject.radius})'`,`'${pobject.topic}'`]},(pData) => { 
     // fetchApi(location.origin+'/api/get_claims_by_geo', object,  (pData) => {
         callback(pData.data);
     }); 
     }
     
 function getClaimsByGeoFTS(pobject,callback) {
-    getDataApi({func:"public.get_claims_by_geo_fts",args:[`'((${pobject.lat}, ${pobject.lng}), ${pobject.radius})'`,`'${pobject.topic}'`,`'${pobject.text}'`,`'${pobject.month}'`],sess_id:"2342234"},(pData) => {     
+    getDataApi({func:"public.get_claims_by_geo_fts",args:[`'((${pobject.lat}, ${pobject.lng}), ${pobject.radius})'`,`'${pobject.topic}'`,`'${pobject.text}'`,`'${pobject.month}'`]},(pData) => {     
     // fetchApi(location.origin+'/api/get_claims_by_geo_fts', pobject,  (pData) => {
             callback(pData.data);
         }); 
@@ -299,7 +305,8 @@ function fetchApiPost(pUrl, params={}, callback) {
         'Content-Type': 'application/json'
         }, body: JSON.stringify(params)})
     .then(response => response.json())
-    .then(data =>callback(data))    
+    .then(data =>callback(data))
+    .catch(error => alert(error));
 }
 
 async function fetchApiAsync(pUrl, params={}) {

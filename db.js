@@ -45,8 +45,8 @@ async function SessionCreate(pLogin, pPassword, pSession) {
  */
 async function webApiSql(req, res, next) {
   try {
-    let pJson = JSON.stringify(req.body);
-    const data = await db.one('SELECT * from custm.web_api_sql($1)', pJson)
+    let pJson = JSON.stringify(Object.assign({},req.body,{sessionid:req.session.id||0}));
+    const data = await db.one('SELECT * from webapi.web_api_sql($1)', pJson)
     let responseTime = Date.now() - res[cLogger.startTime];
     logger.debug({responseTime},`DB:webApiSql:${req.body.func} time ${responseTime}ms`);
     res.status(200)
@@ -56,7 +56,7 @@ async function webApiSql(req, res, next) {
         message: 'topics'
       });
   } catch (error) {
-    error.message = "db.js:webApiSql error";
+    error.message = "db.js:webApiSql error / " + error.message +" / " +error.hint;
     // throw (error);
     return next(error);
   }

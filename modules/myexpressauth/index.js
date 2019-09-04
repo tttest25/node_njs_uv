@@ -62,7 +62,7 @@ module.exports.Kerberos = kerberos;
 
 function clearKrb(pkbServer) {
     pkbServer.step('YIIIIQYGKwYBBQUCo').then(data => logger.debug('3. ---reset status %o ', data)).catch(err => {
-        logger.debug(' KRB.clear ----catch reset status %s',err);
+        logger.trace(' KRB.clear ----catch reset status %s',err);
         pkbServer.username = undefined;
         pkbServer.contextComplete = false;
     });
@@ -110,12 +110,12 @@ const  myKerberosCheckPassword = ((req, res, next) => {
         logger.info('Login/Pass - success  ',username,data);
         req.auth = req.auth || {};
         req.session = req.session || {};
-        req.auth.username = username;
-        req.session.username = username;
+        req.auth.username = username+'@GORODPERM.RU';
+        req.session.username = username+'@GORODPERM.RU';
         next();
     })
     .catch((err) => {
-        logger.error('Login/Pass - error ',JSON.stringify(err));
+        logger.error('Login/Pass - error :',username, err.message);
         next();
     });   
 });
@@ -129,7 +129,7 @@ const myKerberos = () => composable()
         .then(username => {
             req.auth.username = username;
             req.session.username = username;
-            logger.debug('Auth id - URL %s  ID %s Username %s ',req.url, req.id,username);
+            logger.debug('Auth successfully - URL %s  ID %s Username %s ',req.originalUrl, req.id,username);
             next();
         }, next);
 });
