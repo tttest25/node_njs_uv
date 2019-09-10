@@ -92,6 +92,7 @@ function loggingMiddleware (req, res, next) {
 }
 
 module.exports = {
+    objectSerializer,
     // createLogger,
     createChildLogger,
     logger,

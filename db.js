@@ -53,7 +53,7 @@ async function webApiSql(req, res, next) {
       .json({
         status: 'success',
         data: data.web_api_sql,
-        message: 'topics'
+        message: 'webApiSql'
       });
   } catch (error) {
     error.message = "db.js:webApiSql error / " + error.message +" / " +error.hint;
@@ -62,6 +62,25 @@ async function webApiSql(req, res, next) {
   }
 }
 
+
+/**
+* webJsonSql -> Function for call WebJSON 
+* @param {*} oConf - object config
+*/
+async function webJsonSql(oConf) {
+  try {
+    let pJson = JSON.stringify(oConf);
+    let responseTime = Date.now()
+    // const data = await db.one('SELECT * from uvdata.uv_data_web($1)', pJson)
+    const data = await db.one('SELECT webapi.web_api_web($1) as webdata', pJson)
+    responseTime = Date.now() - responseTime;
+    logger.debug({responseTime},`DB:webJsonSql:${JSON.stringify(data)} time ${responseTime} ms`);
+    return data;
+  } catch (error) {
+    error.message = "DB:webJsonSql error / " + error.message + " / " + error.hint;
+    throw (error);
+  }
+}
 
 function getSingle(req, res, next) {
   var claimID = parseInt(req.params.id);
@@ -188,6 +207,7 @@ module.exports = {
   pgPool: db.$pool,
   SessionCreate: SessionCreate,
   webApiSql: webApiSql,
+  webJsonSql: webJsonSql,
   getSingle: getSingle,
   get_topics: get_topics,
   get_geo_by_topic: get_geo_by_topic,
