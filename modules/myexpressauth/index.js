@@ -4,9 +4,13 @@ const composable = require('composable-middleware');
 const expressAuthNegotiate = require('express-auth-negotiate').default;
 const NestedError = require('nested-error-stacks');
 
+const cLogger = require('../../log');
+const logger = cLogger.createChildLogger({module: 'myexpressauth'})
+
+
 /**
- * Class for Error Kerberos
- */
+* Class for Error Kerberos
+*/
 class SimpleKerberosError extends NestedError {
     constructor(message, nested) {
         super(message, nested); /* istanbul ignore next https://github.com/gotwarlost/istanbul/issues/690 */
@@ -23,32 +27,32 @@ if (isWin) {
     module.exports.Kerberos = {
         username: 'Eugen'
     };
-    console.log('Start on Windows');
+    logger.debug('Start on Windows');
 } else {
-    console.log('Start on Linux OS');
+    logger.error('Start on Linux OS');
 }
 
 const kerberos = require('../kerberos');
 
-console.log(`---- Kerberos STARTING SERVER ----`);
+logger.debug(`---- Kerberos STARTING SERVER ----`);
 kerberos.principalDetails('HTTP', "sm.gorodperm.ru")
     .then((details) => {
-        console.log("Principal:", details);
+        logger.debug("Principal:", details);
     })
     .catch(error => {
-        console.log("Failed to read principal", error);
-        throw new Error(`Failed to read principal ${error}`);
+        logger.error("Failed to read principal", error);
+        throw new SimpleKerberosError('simpleKerberos Failed to read principal stage', error);
     });
 
-console.log(`Init kerberos`);
+logger.debug(`Init kerberos`);
 kerberos.initializeServer("HTTP@sm.gorodperm.ru")
     .then((server) => {
         kbServer = server;
         module.exports.kbServer = kbServer;
-        console.log(`Kerberos server initialized:`, server);
+        logger.debug(`Kerberos server initialized:`, server);
     })
     .catch((error) => {
-        throw new Error(`Failed kerberos initializeServer ${error}`);
+        throw new SimpleKerberosError('simpleKerberos Failed kerberos initializeServer', error);
     });
 
 
@@ -56,33 +60,80 @@ kerberos.initializeServer("HTTP@sm.gorodperm.ru")
 
 module.exports.Kerberos = kerberos;
 
+function clearKrb(pkbServer) {
+    pkbServer.step('YIIIIQYGKwYBBQUCo').then(data => logger.debug('3. ---reset status %o ', data)).catch(err => {
+        logger.trace(' KRB.clear ----catch reset status %s',err);
+        pkbServer.username = undefined;
+        pkbServer.contextComplete = false;
+    });
+}
 
-async function simpleKerberos(token,res) {
-    kbServer.step(token)
+async function simpleKerberos(token) {
+    try {
+    let username = await kbServer.step(token)
         .then(serverResponse => {
-            console.log('-- 1. Kerberos answer %o', { kbServer, serverResponse });
-            res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
+            logger.debug('-- 1. Kerberos answer %o', { kbServer, serverResponse });
+            // res.setHeader('WWW-Authenticate', 'Negotiate ' + kbServer.response);
             if (kbServer.contextComplete && kbServer.username) {
-                console.log('-- 2.  Auth ok', kbServer.contextComplete);
-                kbServer.step('YIIIIQYGKwYBBQUCo').then(data => console.log('3. ---reset status %o ', data)).catch(err => console.error(' KRB.reset error----catch reset status %o ', err));
-                return `${kbServer.username}`;
+                let userName='';
+                logger.info('-- 2.  Auth ok', kbServer.contextComplete,kbServer.username);
+                userName=`${kbServer.username}`
+                clearKrb(kbServer);
+                return userName;
             } else {
-                kbServer.step('').catch(err => { console.error('-- KRB.auth err %o  kbServer %o', err, kbServer); });
+                let errStr=`simpleKerberos "STEP"  auth  not done ${kbServer.contextComplete} ${kbServer.username}`;
+                clearKrb(kbServer);
+                throw new SimpleKerberosError(errStr, new Error('Not authorized'));
             }
         }).catch(err => {
-            // console.log('----------finish err %o  kbServer %o', err, kbServer);
-            console.error(' KRB.step err %o  kbServer %o', err, kbServer)
+            // logger.debug('----------finish err %o  kbServer %o', err, kbServer);
+            clearKrb(kbServer);
+            throw new SimpleKerberosError('simpleKerberos on stage "STEP" error ', err);
         });
+    return username;
+    } catch (error) {
+        console.error(' simpleKerberos auth error ', error, kbServer) ;
+        return undefined;
+    }
 }
 
 
+// example KerberosCheckPassword = (username, password) 
+//
 
-module.exports = () => composable()
-    .use(expressAuthNegotiate())
-    .use((req, res, next) => {
-        simpleKerberos(req.auth.token,res)
-            .then(username => {
-                req.auth.username = username;
-                next();
-            }, next);
-    });
+
+const  myKerberosCheckPassword = ((req, res, next) => {
+    let username = req.body.username || 'def';
+    let password = req.body.password || 'def';
+    return kerberos.checkPassword(username, password, 'HTTP/sm.gorodperm.ru','GORODPERM.RU')
+    .then((data) => {
+        logger.info('Login/Pass - success  ',username,data);
+        req.auth = req.auth || {};
+        req.session = req.session || {};
+        req.auth.username = username+'@GORODPERM.RU';
+        req.session.username = username+'@GORODPERM.RU';
+        next();
+    })
+    .catch((err) => {
+        logger.error('Login/Pass - error :',username, err.message);
+        next();
+    });   
+});
+
+
+
+const myKerberos = () => composable()
+.use(expressAuthNegotiate())
+.use((req, res, next) => {
+    simpleKerberos(req.auth.token)
+        .then(username => {
+            req.auth.username = username;
+            req.session.username = username;
+            logger.debug('Auth successfully - URL %s  ID %s Username %s ',req.originalUrl, req.id,username);
+            next();
+        }, next);
+});
+
+
+module.exports.myKerberos = myKerberos;
+module.exports.myKerberosCheckPassword = myKerberosCheckPassword;

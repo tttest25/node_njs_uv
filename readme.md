@@ -1,9 +1,28 @@
 # Проект геоанализ Управляем вместе
 проект для геоанализа управляем вместе
 
-Запуск
+
+## TODO
+1. add ip to session db in meta
+
+##Запуск
 ------------
-при установки поменять пароль - по умолчанию `mysecretpassword`
+перед сборкой выполнить
+1. при установки поменять пароль - по умолчанию `mysecretpassword`
+2. поменять ./.env 
+3. скопировать keytab в /etc/krb5.keytab
+4. если разработка ведется не на хосте - исправить C:\Windows\System32\drivers\etc\hosts  - на что то `10.59.20.96 sm.gorodperm.ru`
+
+## Logs
+npm start | jq -crR 'fromjson? | select(type == "object")'
+## Send to Logstash
+npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
+
+
+## Autocannon
+./node_modules/.bin/autocannon -c 100 -d 5 -p 10 http://127.0.0.1:3000
+
+
 
 ## Prerequisites
  1. kerberos client install (see bellow krb5)
@@ -13,6 +32,16 @@
 ## ChangeLog 
  *   20190801 - Init
  *   20190805 - Add SSO support kerberos module
+ *   20190806 - Add  "ephemeral" docker and log with CLS (on each cls) + add docker run log rotate
+ *   20190820 - Add auth / log / api db
+ *   20190826 - Move to postgre API and json params
+ *   20190828 - Fix login + logging 
+ *   20190920 - Add limit 50 mb (0.1.5)
+              - Webapisql -> webapi
+              - Add PG template 
+              - Add working mode with pg_template PUG
+              
+              
 
 ------------
 ## Deploy
@@ -24,28 +53,30 @@ docker build -t melnikov_ea/node_njs_uv .
 # for initial install
 docker run \
 -p 3000:3000 \
+-p 9229:9229 \
 -v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
+--log-driver json-file --log-opt max-size=2m \
 --name "node_njs_uv" \
 -it --entrypoint /bin/bash melnikov_ea/node_njs_uv
 
 # run bash in container and run
-# !!! + install kerberos !!!
-npm install 
+
 
 
 #after install node_modules run
 docker run \
 -p 3000:3000 \
+-p 9229:9229 \
 -v $(pwd):/app \
 -m "300M" --memory-swap "1G" \
+--log-driver json-file --log-opt max-size=2m \
 --name "node_njs_uv" \
 -d melnikov_ea/node_njs_uv
  
 
 --rm \
--d melnikov_ea/node_njs_uv \
--w "/home/node/app" \
+-w "/home/node/app" 
 ~~~
 
 
@@ -62,16 +93,22 @@ http://127.0.0.1:3000/api/get_claims_by_geo?lat=57.99330304745119&lng=56.1976941
 
 
 
+Logging
+------------
+https://habr.com/ru/post/442392/ - почитать про подход
+https://github.com/keenondrums/cls-proxify - проект про прокси CLS
+https://itnext.io/give-your-logs-more-context-7b43ea6b4ae6 - как нужно писать
+
+
+
 Kerberos
 ------------
 ~~~BASH
 #For install kerberos on OS:
 apt search kerberos
-apt-get install krb5-user
-apt install libkrb5-dev
 apt install krb5-user krb5-config krb5-pkinit
-apt-get install krb5-user libpam-krb5 libpam-ccreds auth-client-config krb5-pkinit
-apt install krb5-multidev
+apt install libkrb5-dev
+apt install libpam-krb5 libpam-ccreds krb5-pkinit
 apt install krb5-multidev libkrad-dev libkrb5-dev
 apt install nodejs
 # kerberos npm - clone branch with node 12 support
@@ -117,6 +154,14 @@ C:\Users\melnikov-ea\Documents\NodeJS\njs_uv>C:\Users\melnikov-ea\AppData\Roamin
 Помощь по коду
 ------------
 ~~~
+-- SQL injection , как фильтровать строки если нет выбора
+1. filter es6 example
+console.log([...`Robert'); DROP TABLE Students;--`].filter( e => (   (e.toUpperCase() != e.toLowerCase() || isFinite(e) || '_='.includes(e))) && e!=' ').join(''));  
+2. regexp
+`Robert'); DROP TABLE Students;--`.replace(/[^\d\w.]+/gm,'')
+
+
+
 handle failed async request - https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
 Async Await - https://medium.com/@stasonmars/%D0%B2%D1%81%D0%B5%CC%88-%D1%87%D1%82%D0%BE-%D0%BD%D1%83%D0%B6%D0%BD%D0%BE-%D0%B7%D0%BD%D0%B0%D1%82%D1%8C-%D0%BE%D0%B1-async-await-%D1%86%D0%B8%D0%BA%D0%BB%D1%8B-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8C-%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%B2-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-76dde2cb6949
 Fetch:Common mistake fetch  - https://medium.com/cameron-nokes/4-common-mistakes-front-end-developers-make-when-using-fetch-1f974f9d1aa1

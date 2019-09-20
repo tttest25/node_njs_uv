@@ -1,0 +1,92 @@
+extends layout
+
+block styles
+  style.
+    body{
+      font-family: 'Open Sans', sans-serif;
+      background:#3498db;
+      margin: 0 auto 0 auto;  
+      width:100%; 
+      text-align:center;
+      margin: 20px 0px 20px 0px;   
+    }
+    .box{
+      background:white;
+      width:300px;
+      border-radius:6px;
+      margin: 0 auto 0 auto;
+      /* padding:0px 0px 70px 0px;*/
+      border: #2980b9 4px solid;
+    }
+    .login{
+      background:#ecf0f1;
+      border: #ccc 1px solid;
+      border-bottom: #ccc 2px solid;
+      padding: 8px;
+      width:250px;
+      color:#AAAAAA;
+      margin-top:10px;
+      font-size:1em;
+      border-radius:4px;
+    }
+
+    .password{
+      border-radius:4px;
+      background:#ecf0f1;
+      border: #ccc 1px solid;
+      padding: 8px;
+      width:250px;
+      font-size:1em;
+      margin-top: 5px;
+    }
+
+    .btn{
+      background:#2ecc71;
+      width:80%;
+      padding-top:5px;
+      padding-bottom:5px;
+      color:white;
+      border-radius:4px;
+      border: #27ae60 1px solid;
+      text-align: center;
+      margin-top:20px;
+      margin-bottom:20px;
+      /*float:left;*/
+      /*margin-left:16px;*/
+      font-weight:800;
+      font-size:0.8em;
+    }
+
+    .btn:hover{
+      background:#2CC06B; 
+    }
+
+
+block scripts
+  script(type='text/javascript').
+    function checkKerberos () {
+      fetch('/kerberos').then((response) => {
+        console.log(response);
+        if (response.status == 200) { 
+          //- alert('ok');
+          window.location.href = '/'; 
+        };
+      })
+    };
+    window.onload = () => {
+      setTimeout(checkKerberos, 2000);
+    };
+
+
+block content
+  
+  .box
+    form(action='./login', method='post')
+      h1= title
+      label(for='uname')
+      input(class="login" type='text', placeholder='Enter Username', name='username', required='')
+      label(for='psw')
+      input(class="password" type='password', placeholder='Enter Password', name='password', required='')
+      button(class="btn" type='submit') Login
+
+
