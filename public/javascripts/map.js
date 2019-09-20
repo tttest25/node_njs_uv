@@ -21,7 +21,7 @@ function initMap() {
     // move to new version
     // fetchApiAsync(location.origin+'/api/get_topics', {}).then((data) => {fill_topic(data.data) });
 
-    getDataApi({func:"uvdata.uv_data_get_topics",args:[]},(data) => { 
+    getDataApi({func:"uvdata.api_get_topics",args:[]},(data) => { 
         fill_topic(data.data)
         console.log('Ok'); 
     });
@@ -71,6 +71,11 @@ function initMap() {
     });
 
 }
+
+function goToLoadData() {
+    window.location.assign("/map/uvtemplate/list");
+}
+
 
 /*
 claim_id: 24771,
@@ -154,8 +159,8 @@ function loadGeoData(pClick = null,callback) {
 /** Get claims by topic */
 function loadGeoDataApi(pClick = null,callback) {
     let pCfg =get_params_json(pClick);
-    getDataApi({func:"uvdata.uv_data_get_claims",args:pCfg},(data) => { 
-        console.log('Load api success %o',{func:"uvdata.uv_data_get_claims",args:pCfg}); 
+    getDataApi({func:"uvdata.api_get_claims",args:pCfg},(data) => { 
+        console.log('Load api success %o',{func:"uvdata.api_get_claims",args:pCfg}); 
         data.cfg = pCfg;
         callback(data);
     });
@@ -200,7 +205,7 @@ function getClaimsByGeoFTS(pobject,callback) {
 
 /** Main function to get data */
 function getDataApi(object,callback) {
-    fetchApiPost(location.origin+'/api/webapisql', object,  (pData) => {callback(pData) }); 
+    fetchApiPost(location.origin+'/api/webapi', object,  (pData) => {callback(pData) }); 
 }
 
 

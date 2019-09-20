@@ -36,6 +36,12 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20190820 - Add auth / log / api db
  *   20190826 - Move to postgre API and json params
  *   20190828 - Fix login + logging 
+ *   20190920 - Add limit 50 mb (0.1.5)
+              - Webapisql -> webapi
+              - Add PG template 
+              - Add working mode with pg_template PUG
+              
+              
 
 ------------
 ## Deploy
