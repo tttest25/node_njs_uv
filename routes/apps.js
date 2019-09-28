@@ -1,30 +1,24 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
-const { version } = require('../package.json');
+// const { version } = require('../package.json');
 var db = require('../db');
 const pug = require('pug');
 var path = require('path');
 
 
 const cLogger = require('../log');
-const logger = cLogger.createChildLogger({module: 'map.js'})
+const logger = cLogger.createChildLogger({module: 'apps.js'})
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  let name = req.auth.username || 'Anonymous';
-  // let name = 'Anonymous';
-  // console.log('Auth routh id %s %o',req.id,req);
-  res.render('map', { title: `Heat - ${version} - ${name}` });
-});
-
-
-
+// WEB_API_WEB - MiddleWare for process param
 router.param('arr', async (req, res, next, mode) => {
   try {
     let oReq = cLogger.objectSerializer(req, ['method', 'originalUrl', 'remoteAddress', 'remotePort', 'headers', 'body', 'query', 'params']);
     oReq.sessionId = req.session.id;
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var modes = [].concat(req.params[0].split('/').slice(0));
+    mode = mode+modes.shift();
     let ObjectParams = Object.assign({}, {
       req: oReq,
       ip: ip,
@@ -34,18 +28,30 @@ router.param('arr', async (req, res, next, mode) => {
       // , statusCode: statusCode
     });
     res.locals.ObjectParams = ObjectParams;
+    
+    // Work with DB
     res.locals.Result = await db.webJsonSql(ObjectParams);
-    logger.trace('Router: /mode Process param Mode: %o -> %o', ObjectParams,res.locals.Result )
+    
+    // #DEBUG move to trace
+    logger.debug('APPS.JS Process param in:%o -> out:%o', ObjectParams,res.locals.Result )
     next()
   } catch (error) {
     next(error);
   }
 })
 
+// stub 
+router.get('/', async (req, res, next) => {
+  try {
+    res.render('apps', { title: `Application` });
+  } catch (e) {
+    //this will eventually be handled by your error handling middleware
+    next(e) 
+  }
+})
 
-
-/** All modes */
-router.all('/(:arr)/*', (req, res, next) => {
+// WEB_API_WEB - route for 
+router.all('/(:arr)*', (req, res, next) => {
   
   let webdata = res.locals.Result.webdata || {};
   let dtype = webdata.type || 'none';
@@ -54,7 +60,7 @@ router.all('/(:arr)/*', (req, res, next) => {
   let tdata = data.tdata || {};
   let error;
   
-  logger.debug(`Router mode: start /mode/${dtype} router action`);
+  logger.trace(`APPS.JS entry point /app/${dtype} route`);
   switch(dtype) {
     case 'pug':
         res.status(200).send(pug.render(tbody, {data: tdata, filename: "web_api", basedir: path.join(__dirname, '../views')}));
@@ -65,8 +71,8 @@ router.all('/(:arr)/*', (req, res, next) => {
     default:
         // Error no mode for process
         // res.status(500).json(Object.assign({}, {objParams: res.locals.ObjectParams, objResult: res.locals.Result}));
-        logger.error( '!Router mode: error, no supported data.type %o ', {resLocals: res.locals});
-        error = new Error(`!Router mode: error, no supported data.type - returned ${dtype}`);
+        logger.error( 'APPS.JS!ERROR no supported(only pug/pug-debug) data.type %o  ', {resLocals: res.locals});
+        error = new Error(`APPS.JS!ERROR no supported data.type - returned ${dtype}`);
         error.httpStatusCode = 500
         return next(error)
   }

@@ -1,6 +1,6 @@
 {
   "name": "njs-uv",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./bin/www.js | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r",
@@ -27,7 +27,8 @@
     "pino": "^5.13.2",
     "pino-socket": "^2.0.0",
     "pino-std-serializers": "^2.4.2",
-    "pug": "^2.0.4"
+    "pug": "^2.0.4",
+    "showdown": "^1.9.0"
   },
   "devDependencies": {
     "autocannon": "^4.0.0",

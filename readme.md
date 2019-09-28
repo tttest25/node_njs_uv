@@ -40,6 +40,11 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
               - Webapisql -> webapi
               - Add PG template 
               - Add working mode with pg_template PUG
+ *   20190920 - Add Auth to DB WEB_API WEB_API_WEB (0.1.6 dev-webMode)
+ *   20190928 - Add debug mode to PUG_editor (0.1.6 dev-webMode)
+              - Created DOC /dec from markdown
+              - Add /app mode and fix logging
+
               
               
 

@@ -14,11 +14,13 @@ const { version } = require('./package.json');
 
 var expressKerberos = require('./modules/myexpressauth');
 
+var authRouter = require('./routes/auth');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var mapRouter = require('./routes/map');
+var docRouter = require('./routes/doc');
 var apiRouter = require('./routes/api');
-var authRouter = require('./routes/auth');
+var appsRouter = require('./routes/apps');
 
 
 /**
@@ -92,17 +94,27 @@ app.use(session({
 );
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// System auth routers
 app.get('/login', (req, res, next) => { res.render('login', { title: `Login - ${version}` }) });
 app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
 app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
 app.use('/logout', authRouter.logout);
 
-
+// index router+ middlware for all routes loadUser
 app.use('/', loadUser, indexRouter);
 
 app.use('/users', usersRouter);
+// test route map
 app.use('/map', mapRouter);
+// Documents
+app.use('/doc', docRouter);
+
+// Api Routes - webapi example
 app.use('/api', apiRouter);
+// WebApp Routes - pug html example
+app.use('/app', appsRouter);
+
 
 
 
@@ -115,7 +127,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  logger.error('Error',err);
+  logger.error('APP.JS - main error mess: %s err:%o',err.message, err);
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
