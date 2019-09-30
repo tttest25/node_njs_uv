@@ -30,7 +30,7 @@ router.param('arr', async (req, res, next, mode) => {
     res.locals.ObjectParams = ObjectParams;
     
     // Work with DB
-    res.locals.Result = await db.webJsonSql(ObjectParams);
+    res.locals.Result = await db.webApiWeb(ObjectParams);
     
     // #DEBUG move to trace
     logger.debug('APPS.JS Process param in:%o -> out:%o', ObjectParams,res.locals.Result )

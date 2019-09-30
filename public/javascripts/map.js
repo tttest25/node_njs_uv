@@ -73,7 +73,7 @@ function initMap() {
 }
 
 function goToLoadData() {
-    window.location.assign("/map/uvtemplate/list");
+    window.location.assign("/app/uvdatain/load");
 }
 
 

@@ -64,20 +64,20 @@ async function webApi(req, res, next) {
 
 
 /**
-* webJsonSql -> Function for call WebJSON 
+* webApiWeb -> Function for call WebJSON 
 * @param {*} oConf - object config
 */
-async function webJsonSql(oConf) {
+async function webApiWeb(oConf) {
   try {
     let pJson = JSON.stringify(oConf);
     let responseTime = Date.now()
     // const data = await db.one('SELECT * from uvdata.uv_data_web($1)', pJson)
     const data = await db.one('SELECT webapi.web_api_web($1) as webdata', pJson)
     responseTime = Date.now() - responseTime;
-    logger.debug({responseTime},`DB:webJsonSql:${JSON.stringify(data)} time ${responseTime} ms`);
+    logger.debug({responseTime},`DB:webApiWeb:${JSON.stringify(data)} time ${responseTime} ms`);
     return data;
   } catch (error) {
-    error.message = "DB:webJsonSql error / " + error.message + " / " + error.hint;
+    error.message = "DB:webApiWeb error / " + error.message + " / " + error.hint;
     throw (error);
   }
 }
@@ -207,7 +207,7 @@ module.exports = {
   pgPool: db.$pool,
   SessionCreate: SessionCreate,
   webApi: webApi,
-  webJsonSql: webJsonSql,
+  webApiWeb: webApiWeb,
   getSingle: getSingle,
   get_topics: get_topics,
   get_geo_by_topic: get_geo_by_topic,
