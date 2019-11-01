@@ -49,8 +49,26 @@ html, body {
 .claim-panel
 {
     border: 1px solid grey;
-    
 }
+
+.claim-panel td
+{
+    border: 1px solid grey;
+    padding: 0px;
+}
+
+td.red
+{
+    color: red;
+}
+
+
+.claim-panel th
+{
+    border: 1px solid grey;
+    padding: 0px;
+}
+
 .claim-panel-test
 {
     border: 1px solid grey;

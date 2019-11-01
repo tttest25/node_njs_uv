@@ -55,6 +55,7 @@ function initMap() {
             newDiv.innerHTML = `<div class="claim-panel">
                 <a href="https://vmeste.permkrai.ru/messages/reports/${element.claim_id}" target="_blank"> ${element.claim_id}</a>
                 <span> ${element.create_dt.substring(0, 10)}</span>
+                <span > Авт.  ${element.author} </span>
                 <div class="tooltip"> Отв. <span class="tooltiptext"> ${element.executor} </span> </div>
                 <div class="tooltip"> Адр. <span class="tooltiptext"> ${element.address}  </span> </div>
                 <br>
@@ -152,8 +153,8 @@ function loadGeoData(pClick = null,callback) {
         add_info('Тема-'+ data.cfg['p_topic'] +'( '+gpoints.length + ' )');
         console.log('Ok loadGeoData %o',data.cfg); 
         if (callback) callback(data);
+        if(data.cfg['p_topic']=='prev-1' && !data.cfg.hasOwnProperty('p_point')){loadTextInfo(data.cfg);}
     });
-    
 }
 
 /** Get claims by topic */
@@ -177,6 +178,65 @@ function loadGeoDataFts(pObject) {
         mapSetHeatMap(data.data||[]);
         add_info('loadGeoDataFts Тема-'+pObject.topic +'( '+gpoints.length + ' )');
         console.log('Ok'); 
+    });
+    
+}
+
+
+function retFormat(par1,par2) {
+   return `<td class="${(par1-par2>0)?'red':''}">${par1}</td>`;
+}
+
+/**
+ * format Table String
+ * @pObj {object} 
+ */
+function retTD(pObj) {
+    let vResult,cnt_w1,cnt_w2,cnt_w3,cnt_w4,cnt_w5,cnt_w6,cnt_w7,cnt_w8;
+    cnt_w1=pObj.cnt_w1||0;
+    cnt_w2=pObj.cnt_w2||0;
+    cnt_w3=pObj.cnt_w3||0;
+    cnt_w4=pObj.cnt_w4||0;
+    cnt_w5=pObj.cnt_w5||0;
+    cnt_w6=pObj.cnt_w6||0;
+    cnt_w7=pObj.cnt_w7||0;
+    cnt_w8=pObj.cnt_w8||0;
+    vResult=`<tr><td>${pObj.dist}</td><td>${pObj.topic}</td>`;
+    vResult+=retFormat(cnt_w1,cnt_w2);
+    vResult+=retFormat(cnt_w2,cnt_w3);
+    vResult+=retFormat(cnt_w3,cnt_w4);
+    vResult+=retFormat(cnt_w4,cnt_w5);
+    vResult+=retFormat(cnt_w5,cnt_w6);
+    vResult+=retFormat(cnt_w6,cnt_w7);
+    vResult+=retFormat(cnt_w7,cnt_w8);
+    vResult+=retFormat(cnt_w8,10000);
+    vResult+='</tr>';
+    return vResult;
+}
+
+/** Get info in text form UV
+*/
+function loadTextInfo(pObject) {
+    pObject=pObject||{};
+    clearInfo();
+    getDataApi({func:"uvdata.api_get_text_info",args:pObject},(data) => { 
+    // getGeoByTopicFts(pObject,(data) => { 
+        
+        var iHtml='';
+        data=data||{data:[]};
+        data=data.data;
+        iHtml='api_get_text_info data <br> - <table cellspacing="0" cellpadding="0" class="claim-panel"><tr><th>Район</th><th>Тема</th><th>Нед1</th><th>Нед2</th><th>Нед3</th><th>Нед4</th><th>Нед5</th><th>Нед6</th><th>Нед7</th><th>Нед8</th></tr>';
+        data.forEach(function(element) {
+            iHtml+=retTD(element);
+           /* `<tr><td>${element.dist}</td><td>${element.topic}</td>
+            <td>${element.cnt_w1}</td><td>${element.cnt_w2}</td><td>${element.cnt_w3}</td><td>${element.cnt_w4}</td><td>${element.cnt_w5}</td><td>${element.cnt_w6}</td><td>${element.cnt_w7}</td><td>${element.cnt_w8}</td></tr>`;*/
+        });
+
+        iHtml+='</table>';
+        var newDiv = document.createElement("div");
+        newDiv.innerHTML=iHtml;
+        add_info_element(newDiv);
+        console.log('loadTextInfo - Ok'); 
     });
     
 }

@@ -30,7 +30,7 @@ block content
       option(value=val) #{index}
   button(onclick="loadSelectedTopic()") Загрузить тему
   select#select_month(name="selMonth")
-    each priority in ['2019', '2019-09','2019-08', '2019-07', '2019-06', '2019-05', '2019-04', '2019-03', '2019-02', '2019-01']
+    each priority in ['2019', '2019-11', '2019-10', '2019-09','2019-08', '2019-07', '2019-06', '2019-05', '2019-04', '2019-03', '2019-02', '2019-01']
       option(value=priority+'-01' selected=(1==0) ) #{priority}
   select#select_radius(name="selRadius")
     each el in [[1,  "ВСЕ"],[0.1,  "11km"], [0.01,  "1 km"], [0.001,  "111 m"]]

@@ -44,6 +44,7 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20190928 - Add debug mode to PUG_editor (0.1.6 dev-webMode)
               - Created DOC /dec from markdown
               - Add /app mode and fix logging
+ *   20191030 - Add js_text to info from issue
 
               
               
