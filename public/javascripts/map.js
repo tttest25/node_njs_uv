@@ -192,7 +192,8 @@ function retFormat(par1,par2) {
  * @pObj {object} 
  */
 function retTD(pObj) {
-    let vResult,cnt_w1,cnt_w2,cnt_w3,cnt_w4,cnt_w5,cnt_w6,cnt_w7,cnt_w8;
+    let vResult,cnt_w0,cnt_w1,cnt_w2,cnt_w3,cnt_w4,cnt_w5,cnt_w6,cnt_w7;
+    cnt_w0=pObj.cnt_w0||0;
     cnt_w1=pObj.cnt_w1||0;
     cnt_w2=pObj.cnt_w2||0;
     cnt_w3=pObj.cnt_w3||0;
@@ -200,16 +201,17 @@ function retTD(pObj) {
     cnt_w5=pObj.cnt_w5||0;
     cnt_w6=pObj.cnt_w6||0;
     cnt_w7=pObj.cnt_w7||0;
-    cnt_w8=pObj.cnt_w8||0;
+    
     vResult=`<tr><td>${pObj.dist}</td><td>${pObj.topic}</td>`;
+    vResult+=retFormat(cnt_w0,cnt_w1);
     vResult+=retFormat(cnt_w1,cnt_w2);
     vResult+=retFormat(cnt_w2,cnt_w3);
     vResult+=retFormat(cnt_w3,cnt_w4);
     vResult+=retFormat(cnt_w4,cnt_w5);
     vResult+=retFormat(cnt_w5,cnt_w6);
     vResult+=retFormat(cnt_w6,cnt_w7);
-    vResult+=retFormat(cnt_w7,cnt_w8);
-    vResult+=retFormat(cnt_w8,10000);
+    vResult+=retFormat(cnt_w7,10000);
+   
     vResult+='</tr>';
     return vResult;
 }
