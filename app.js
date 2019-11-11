@@ -21,6 +21,7 @@ var mapRouter = require('./routes/map');
 var docRouter = require('./routes/doc');
 var apiRouter = require('./routes/api');
 var appsRouter = require('./routes/apps');
+var updateRouter = require('./routes/update');
 
 
 /**
@@ -115,7 +116,7 @@ app.use('/api', apiRouter);
 // WebApp Routes - pug html example
 app.use('/app', appsRouter);
 
-
+app.use('/update', updateRouter);
 
 
 // catch 404 and forward to error handler

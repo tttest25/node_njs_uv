@@ -45,6 +45,7 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
               - Created DOC /dec from markdown
               - Add /app mode and fix logging
  *   20191030 - Add js_text to info from issue
+ *   20191111 - Add /update to auto update git resources 
 
               
               
