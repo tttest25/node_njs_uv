@@ -1,8 +1,53 @@
 extends layout
 
-block content
-  h1= title
-  p Welcome to -> #{title}
-  p Test
-  a(href='/map') Map
+block navbar
+  .d-flex.flex-column.flex-md-row.align-items-center.p-3.px-md-4.mb-3.bg-white.border-bottom.shadow-sm
+    h5.my-0.mr-md-auto.font-weight-normal
+      img.img-fluid(src='/images/gerb.png')
+      |  АГП 
+      | #{title}
+    nav.my-2.my-md-0.mr-md-3
+      a.p-2.text-dark(href='#') Завести заявку
+      a.p-2.text-dark(href='#') Заявки
+      a.p-2.text-dark(href='#') Поддержка
+    a.btn.btn-outline-primary(href='#') Выйти
 
+
+block content
+  .container-fluid
+    nav(aria-label='breadcrumb')
+    ol.breadcrumb
+      li.breadcrumb-item
+        a(href="#") 
+          i.fa.fa-home
+          Home
+      li.breadcrumb-item
+        a(href='#') Library
+      li.breadcrumb-item.active(aria-current='page') Data
+    .row
+      // .col-md-2.d-none.d-md-block.bg-light.sidebar
+      .col-md
+        .card-deck
+          .card(style='width: 15rem;')
+              i.fas.fa-globe-europe.fa-5x
+              //img.card-img-top(src='...' alt='...')
+              .card-body
+                h5.card-title UV-geoinfo
+                p.card-text
+                | Управляем Вместе
+                a.btn.btn-primary(href='/map') Go.
+          .card(style='width: 18rem;')
+              img.card-img-top(src='...' alt='...')
+              .card-body
+                h5.card-title UV-geoinfo
+                p.card-text
+                | Управляем Вместе - .
+                a.btn.btn-primary(href='/map') Go somewhere
+                
+              
+
+block footer
+  footer.footer
+    .container-fluid
+      .footer_copyright
+      | 2019&nbsp;&copy;&nbsp;

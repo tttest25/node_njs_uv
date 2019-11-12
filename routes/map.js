@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const { version } = require('../package.json');
-var db = require('../db');
-const pug = require('pug');
-var path = require('path');
+// var db = require('../db');
+// const pug = require('pug');
+// var path = require('path');
 
 
 const cLogger = require('../log');
