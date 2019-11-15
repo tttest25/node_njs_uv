@@ -1,16 +1,15 @@
 /* Always set the map height explicitly to define the size of the div
 * element that contains the map. */
-#map {
+/* #map {
     height: 100%;
-}
+} */
 /* Optional: Makes the sample page fill the window. */
-html, body {
+ html, body {
     height: 100%;
-    margin: 0;
-    padding: 0;
-}
+} 
 #floating-panel {
-    position: absolute;
+    font-family: 'Roboto','sans-serif';
+    /* position: absolute;
     top: 10px;
     left: 25%;
     z-index: 5;
@@ -18,11 +17,11 @@ html, body {
     padding: 5px;
     border: 1px solid #999;
     text-align: center;
-    font-family: 'Roboto','sans-serif';
+
     line-height: 30px;
-    padding-left: 10px;
+    padding-left: 10px; */
 }
-#floating-panel {
+/* #floating-panel {
     background-color: #fff;
     border: 1px solid #999;
     left: 25%;
@@ -30,20 +29,20 @@ html, body {
     position: absolute;
     top: 10px;
     z-index: 5;
-}
+} */
 
 #floating-panel-info {
     overflow: hidden;
     overflow-y: scroll;
-    background-color: #fff;
-    border: 1px solid #999;
-    left: 75%;
-    padding: 5px;
-    width: 24% ;
-    height: 70% ;
-    position: absolute;
-    top: 10px;
-    z-index: 5;
+    /* background-color: #fff;
+    border: 1px solid #999; */
+    /* left: 75%; */
+    /* padding: 5px; */
+    /* width: 24% ; */
+    /* height: 70% ; */
+    /* position: absolute; */
+    /* top: 10px; */
+    /* z-index: 5; */
 }
 
 .claim-panel

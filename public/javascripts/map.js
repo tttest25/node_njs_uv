@@ -12,6 +12,7 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
     center: {lat: 58.006948, lng: 56.234773},
+    disableDefaultUI: true,
     mapTypeId: 'roadmap'
     });
 
@@ -52,7 +53,8 @@ function initMap() {
             data.forEach(function(element) {
                 // console.log(element);
                 var newDiv = document.createElement("div");
-            newDiv.innerHTML = `<div class="claim-panel">
+                newDiv.classList.add('row');
+            newDiv.innerHTML = `<div class="col-12">
                 <a href="https://vmeste.permkrai.ru/messages/reports/${element.claim_id}" target="_blank"> ${element.claim_id}</a>
                 <span> ${element.create_dt.substring(0, 10)}</span>
                 <span > Авт.  ${element.author} </span>
@@ -117,7 +119,7 @@ function get_params_json(pClick = null) {
     conf_obj.p_topic = (e.options[e.selectedIndex].value);
     e = document.getElementById('select_month'); 
     let p_month = e.options[e.selectedIndex].value
-    if(p_month.length===10) { conf_obj.p_month = (p_month);}
+    if(p_month.length===10 || p_month.includes('prev')) { conf_obj.p_month = (p_month);}
     e = document.getElementById('select_radius'); 
     conf_obj.radius = (e.options[e.selectedIndex].value);
     if(pClick){conf_obj.p_point = `(${pClick},${conf_obj.radius})`;}
@@ -153,7 +155,7 @@ function loadGeoData(pClick = null,callback) {
         add_info('Тема-'+ data.cfg['p_topic'] +'( '+gpoints.length + ' )');
         console.log('Ok loadGeoData %o',data.cfg); 
         if (callback) callback(data);
-        if(data.cfg['p_topic']=='prev-1' && !data.cfg.hasOwnProperty('p_point')){loadTextInfo(data.cfg);}
+        if(data.cfg['p_month']=='prev-1' && !data.cfg.hasOwnProperty('p_point')){loadTextInfo(data.cfg);}
     });
 }
 

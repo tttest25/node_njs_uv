@@ -9,8 +9,9 @@ block navbar
     nav.my-2.my-md-0.mr-md-3
       a.p-2.text-dark(href='#') Завести заявку
       a.p-2.text-dark(href='#') Заявки
+      a.p-2.text-dark(href='#') Проекты
       a.p-2.text-dark(href='#') Поддержка
-    a.btn.btn-outline-primary(href='#') Выйти
+    a.btn.btn-outline-primary(href='/logout') Выйти
 
 
 block content
@@ -22,32 +23,42 @@ block content
           i.fa.fa-home
           Home
       li.breadcrumb-item
-        a(href='#') Library
+        a(href='#') Проекты
       li.breadcrumb-item.active(aria-current='page') Data
     .row
       // .col-md-2.d-none.d-md-block.bg-light.sidebar
-      .col-md
+      .col.d-flex
         .card-deck
-          .card(style='width: 15rem;')
-              i.fas.fa-globe-europe.fa-5x
+          .card(style='width: 15rem;').text-center
+              .card-header.text-center.p-1
+                i.fas.fa-globe-europe.fa-5x
+                h5.card-title.m-1 UV-geoinfo
               //img.card-img-top(src='...' alt='...')
-              .card-body
+              .card-body.text-justify
+                p.card-text Гео информационный проект - Управляем Вместе
+                a.btn.btn-primary(href='/map') Перейти к UV_GEO
+                //- a.card-link(href='/map') Перейти к UV_GEO
+          .card(style='width: 15rem;').text-center
+            //- .card-header.text-center.p-1
+            i.fas.fa-globe-europe.fa-5x.mt-4
+            //img.card-img-top(src='...' alt='...')
+            .card-body.text-left
+              h5.card-title.text-center UV-geoinfo
+              p.card-text.text-muted Гео информационный проект - Управляем Вместе
+              //- a.btn.btn-primary(href='/map') Перейти к UV_GEO
+              a.card-link(href='/map') Перейти к UV_GEO
+          .card(style='width: 18rem;').text-center
+              //- img.card-img-top(src='...' alt='...')
+              i.fas.fa-globe-europe.fa-5x.mt-4
+              .card-body.text-center
                 h5.card-title UV-geoinfo
-                p.card-text
-                | Управляем Вместе
-                a.btn.btn-primary(href='/map') Go.
-          .card(style='width: 18rem;')
-              img.card-img-top(src='...' alt='...')
-              .card-body
-                h5.card-title UV-geoinfo
-                p.card-text
-                | Управляем Вместе - .
-                a.btn.btn-primary(href='/map') Go somewhere
+                p.card-text Управляем Вместе - .
+                a.card-link(href='/map') Go somewhere
                 
               
 
 block footer
-  footer.footer
-    .container-fluid
-      .footer_copyright
-      | 2019&nbsp;&copy;&nbsp;
+  footer
+    // Текст внутри блока выровнен по правому краю. Цвет фона блока #2a2a2a, значения полей от блока до его содержимого равно 1em, цвет текста внутри блока белый (#fff)
+    div.text-muted(style='padding:1em; ')
+      | &copy; АГП-УИТ 2019&nbsp;

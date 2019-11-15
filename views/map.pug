@@ -1,58 +1,66 @@
-doctype html
-html
-  head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    title #{title}
-    block styles
-    block scripts
-  body
-    block content
-
-
-
+extends layout
+//- doctype html
+//- html
+//-   head
+//-     meta(charset='utf-8')
+//-     meta(http-equiv='X-UA-Compatible', content='IE=edge')
+//-     link(rel='stylesheet', href='/stylesheets/style.css')
+//-     title #{title}
+//-     block styles
+//-     block scripts
+//-   body
+//-     block content
 
 block styles
-link(rel='stylesheet', href='/stylesheets/map.css')
+  link(rel='stylesheet', href='/stylesheets/map.css')
 
 block scripts
+  script(src='/javascripts/map.js')
 
-script(src='/javascripts/map.js')
+block navbar
+  .d-flex.flex-column.flex-md-row.align-items-center.p-1.px-md-1.mb-1.bg-white.border-bottom.shadow-sm
+    h5.my-0.mr-md-auto.font-weight-normal
+      a(href='/')
+        img.img-fluid(src='/images/gerb.png')
+      |  АГП 
+      | #{title}
+    nav.my-2.my-md-0.mr-md-3
+      a.p-2.text-dark(href='/') Проекты
+    a.btn.btn-outline-primary(href='/logout') Выйти
 
 block content
+  .container-fluid.h-100
+    .row.h-100
+      .col.h-100
+        .row.border.border-danger.h-100
+          .col-12.p-0.position-relative.h-100
+            #map.h-100
+          .col-auto.p-2.position-absolute.border.bg-light#floating-panel(style='top:10px; left:200px;z-index:1')
+            .form-inline
+              label.my-1.mr-2(for="inlineFormCustomSelectPref") Тема
+              select.form-control-sm.my-1.mr-sm-2#select_topic(style='width: 160px')
+                each val, index in {1:'one',2:'two',3:'three'}
+                  option(value=val) #{index}
+              button.btn.btn-dark.btn-sm.mr-2(onclick="loadSelectedTopic()") Загрузить тему
+              select.form-control-sm.mr-2#select_month(name="selMonth")
+                each priority in [['prev-1','неделя-1'],['prev-2','неделя-2'],['2019-00-00','2019'],['2019-12-01','2019-12'],['2019-11-01','2019-11'] ,['2019-10-01','2019-10'] ,['2019-09-01','2019-09'] ,['2019-08-01','2019-08'] ,['2019-07-01','2019-07'] ,['2019-06-01','2019-06'] ,['2019-05-01','2019-05'] ,['2019-04-01','2019-04'] ,['2019-03-01','2019-03'] ,['2019-02-01','2019-02'] ,['2019-01-01','2019-01'] ] 
+                  option(value=priority[0] selected=(1==0) ) #{priority[1]}
+              select.form-control-sm.mr-2#select_radius(name="selRadius")
+                each el in [[1,  "ВСЕ"],[0.1,  "11km"], [0.01,  "1 km"], [0.001,  "111 m"]]
+                  option(value=el[0] selected=(el[0]==0.01) ) #{el[1]}      
+              label.my-1.mr-2(for="inlineFormCustomSelectPref") FTS 
+              input.input-group.input-group-sm.mr-2#input_fts(name='fts', value='', type='text') 
+              button.btn.btn-sm.btn-dark(onclick="goToLoadData()") Data load
+            //button(onclick="loadPrevWeek(1)") Неделя-1
+            //button(onclick="loadPrevWeek(2)") Неделя-2
+            //button(onclick="toggleHeatmap()") Toggle Heatmap
+            //button(onclick="changeGradient()") Change gradient
+            //button(onclick="changeRadius()") Change radius
+            //button(onclick="changeOpacity()") Change opacity
+
+          .col-3.offset-9.h-75.p-1.bg-white.position-absolute.border#floating-panel-info(style='top:10px; ;z-index:5')
+            |Инфопанель
+            |-
 
 
-#floating-panel
-  |Тема:
-  select#select_topic(style={width: '160px'})
-    each val, index in {1:'one',2:'two',3:'three'}
-      option(value=val) #{index}
-  button(onclick="loadSelectedTopic()") Загрузить тему
-  select#select_month(name="selMonth")
-    each priority in ['2019', '2019-11', '2019-10', '2019-09','2019-08', '2019-07', '2019-06', '2019-05', '2019-04', '2019-03', '2019-02', '2019-01']
-      option(value=priority+'-01' selected=(1==0) ) #{priority}
-  select#select_radius(name="selRadius")
-    each el in [[1,  "ВСЕ"],[0.1,  "11km"], [0.01,  "1 km"], [0.001,  "111 m"]]
-      option(value=el[0] selected=(el[0]==0.01) ) #{el[1]}      
-  | FTS: 
-  input#input_fts(name='fts', value='', type='text') 
-  button(onclick="goToLoadData()") Data load
-  //button(onclick="loadPrevWeek(1)") Неделя-1
-  //button(onclick="loadPrevWeek(2)") Неделя-2
-      
-  
-  //button(onclick="toggleHeatmap()") Toggle Heatmap
-  //button(onclick="changeGradient()") Change gradient
-  //button(onclick="changeRadius()") Change radius
-  //button(onclick="changeOpacity()") Change opacity
-
-
-  
-#floating-panel-info
-   |Инфопанель
-   |-
-    
-#map
-
-script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB1HGxx5hlRpyXkBGykB69XgiLRpD7e5Ro&libraries=visualization&callback=initMap')
+  script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB1HGxx5hlRpyXkBGykB69XgiLRpD7e5Ro&libraries=visualization&callback=initMap')
