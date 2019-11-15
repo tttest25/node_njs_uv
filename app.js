@@ -93,6 +93,10 @@ app.use(session({
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 })
 );
+
+// Set GoogleApiKey for google services
+app.locals.googleApiMaps = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=visualization&callback=initMap`;
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -139,5 +143,6 @@ app.use(function(err, req, res, next) {
 });
 
  logger.info('Start - version %s',process.env.npm_package_version);
+ logger.info(' app.locals.googleApiKey : %s ...', app.locals.googleApiMaps.substring(0, 10));
 
 module.exports = app;
