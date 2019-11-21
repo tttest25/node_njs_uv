@@ -18,14 +18,9 @@ function initMap() {
 
     add_info('Successfully loaded');
 
-    select_topic_clear();
     // move to new version
     // fetchApiAsync(location.origin+'/api/get_topics', {}).then((data) => {fill_topic(data.data) });
-
-    getDataApi({func:"uvdata.api_get_topics",args:[]},(data) => { 
-        fill_topic(data.data)
-        console.log('Ok'); 
-    });
+    loadTopics();
     
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: getPoints(),
@@ -54,15 +49,24 @@ function initMap() {
                 // console.log(element);
                 var newDiv = document.createElement("div");
                 newDiv.classList.add('row');
-            newDiv.innerHTML = `<div class="col-12">
-                <a href="https://vmeste.permkrai.ru/messages/reports/${element.claim_id}" target="_blank"> ${element.claim_id}</a>
-                <span> ${element.create_dt.substring(0, 10)}</span>
-                <span > Авт.  ${element.author} </span>
-                <div class="tooltip"> Отв. <span class="tooltiptext"> ${element.executor} </span> </div>
-                <div class="tooltip"> Адр. <span class="tooltiptext"> ${element.address}  </span> </div>
-                <br>
-                <span>${element.claim_text.substring(0, 50)}</span>
-                </div>`;
+            newDiv.innerHTML = `
+            <div class="col-12 " style='font-size: small;'>
+             <div class="container border border-dark">
+              <div class="row">
+                <div class="col-auto px-1"> <a href="https://vmeste.permkrai.ru/messages/reports/${element.claim_id}" target="_blank"> ${element.claim_id}</a></div>
+                <div class="col-auto px-1"> <small> <span> ${element.create_dt.substring(0, 10)}</small></span></div>
+                <div class="col px-1"> <small> <span> Авт. ${element.author} </small></span></div>
+                <div class="col px-1"> <small> <div data-toggle="tooltip" title="${element.executor}"> Отв.${element.executor.substring(0, 10)} </div></small></div>
+                <div class="col-4 px-1"> <small> <div data-toggle="tooltip" title="${element.address}"> Адр. <span > ${element.address.substring(0, 30)}  </span> </div></small> </div>
+              </div>
+              <span class="alert-link"  data-toggle="collapse" data-target="#demo${element.claim_id}">Текст: ${element.claim_text.substring(0, 50)}</span>
+                  <!-- <button data-toggle="collapse" data-target="#demo">Текст обращение </button> --> 
+              <span id="demo${element.claim_id}" class="collapse">
+                ${element.claim_text.substring(50, 400)}
+              </span>
+             </div>
+            </div>
+            `;
                 add_info_element(newDiv);
             });            
         };
@@ -116,7 +120,8 @@ function get_current_topic_fts() {
 function get_params_json(pClick = null) {
     let conf_obj= {};
     let e = document.getElementById('select_topic'); 
-    conf_obj.p_topic = (e.options[e.selectedIndex].value);
+    let sValue = e.selectedIndex>=0 ? e.options[e.selectedIndex].value : 'all';
+    conf_obj.p_topic = (sValue);
     e = document.getElementById('select_month'); 
     let p_month = e.options[e.selectedIndex].value
     if(p_month.length===10 || p_month.includes('prev')) { conf_obj.p_month = (p_month);}
@@ -155,7 +160,7 @@ function loadGeoData(pClick = null,callback) {
         add_info('Тема-'+ data.cfg['p_topic'] +'( '+gpoints.length + ' )');
         console.log('Ok loadGeoData %o',data.cfg); 
         if (callback) callback(data);
-        if(data.cfg['p_month']=='prev-1' && !data.cfg.hasOwnProperty('p_point')){loadTextInfo(data.cfg);}
+        if(data.cfg['p_month'].includes('prev') && !data.cfg.hasOwnProperty('p_point')){loadTextInfo(data.cfg);}
     });
 }
 
@@ -261,10 +266,6 @@ function getClaimsByGeoFTS(pobject,callback) {
         }   
 
 
-
-
-
-
 /** Network */
 
 /** Main function to get data */
@@ -275,9 +276,18 @@ function getDataApi(object,callback) {
 
 // Interface Function
 
+function loadTopics() {
+    let pCfg =get_params_json(null);
+    select_topic_clear();
+    getDataApi({func:"uvdata.api_get_topics",args:pCfg},(data) => { 
+        fill_topic(data.data)
+        console.log('Ok'); 
+    });
+}
 
 function loadSelectedTopic() {
     loadGeoData();
+    loadTopics();
 }
 
 function loadSelectedTopicFts() {

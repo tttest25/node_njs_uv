@@ -1,5 +1,38 @@
 extends layout
 
+mixin bsCard(title, text, hrefTxt, href)
+  .card(style='width: 15rem;').text-center
+    //- .card-header.text-center.p-1
+    i(class!=attributes.class)
+    //img.card-img-top(src='...' alt='...')
+    .card-body.text-left
+      h5.card-title.text-center= title
+      p.card-text.text-muted= text
+      a.card-link(href=href)= hrefTxt
+
+mixin bsCardHeader(title, text, hrefTxt, href)
+  .card(style='width: 15rem;').text-center
+    .card-header.text-center.p-1
+      i.fas.fa-globe-europe.fa-5x.mt-4
+      h5.card-title.m-1= title
+      //img.card-img-top(src='...' alt='...')
+    .card-body.text-justify
+      p.card-text.text-muted= text
+      a.btn.btn-primary(href=href)= hrefTxt
+
+mixin bsCardCenter(title, text, hrefTxt, href)
+  .card(style='width: 15rem;').text-center
+    //- .card-header.text-center.p-1
+    i.fas.fa-globe-europe.fa-5x.mt-4
+    //img.card-img-top(src='...' alt='...')
+    .card-body.text-center
+      h5.card-title.text-center= title
+      p.card-text.text-muted= text
+      a.card-link(href=href)= hrefTxt
+      a(href=href)&attributes(attributes)= name
+
+
+
 block navbar
   .d-flex.flex-column.flex-md-row.align-items-center.p-3.px-md-4.mb-3.bg-white.border-bottom.shadow-sm
     h5.my-0.mr-md-auto.font-weight-normal
@@ -29,33 +62,8 @@ block content
       // .col-md-2.d-none.d-md-block.bg-light.sidebar
       .col.d-flex
         .card-deck
-          .card(style='width: 15rem;').text-center
-              .card-header.text-center.p-1
-                i.fas.fa-globe-europe.fa-5x
-                h5.card-title.m-1 UV-geoinfo
-              //img.card-img-top(src='...' alt='...')
-              .card-body.text-justify
-                p.card-text Гео информационный проект - Управляем Вместе
-                a.btn.btn-primary(href='/map') Перейти к UV_GEO
-                //- a.card-link(href='/map') Перейти к UV_GEO
-          .card(style='width: 15rem;').text-center
-            //- .card-header.text-center.p-1
-            i.fas.fa-globe-europe.fa-5x.mt-4
-            //img.card-img-top(src='...' alt='...')
-            .card-body.text-left
-              h5.card-title.text-center UV-geoinfo
-              p.card-text.text-muted Гео информационный проект - Управляем Вместе
-              //- a.btn.btn-primary(href='/map') Перейти к UV_GEO
-              a.card-link(href='/map') Перейти к UV_GEO
-          .card(style='width: 18rem;').text-center
-              //- img.card-img-top(src='...' alt='...')
-              i.fas.fa-globe-europe.fa-5x.mt-4
-              .card-body.text-center
-                h5.card-title UV-geoinfo
-                p.card-text Управляем Вместе - .
-                a.card-link(href='/map') Go somewhere
-                
-              
+          +bsCard('UV-geoinfo', 'Гео информационный проект - Управляем Вместе', 'Перейти к UV_GEO', '/map')(class="fas fa-globe-europe fa-5x mt-4")
+          +bsCard('Templates', 'Работа с шаблонами интерфейса', 'Template', '/app/uvtemplate/list')(class="far fa-file-alt fa-5x mt-4")
 
 block footer
   footer

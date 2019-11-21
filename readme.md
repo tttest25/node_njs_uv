@@ -98,6 +98,11 @@ http://127.0.0.1:3000/api/get_claims_by_geo?topic=Ямы, выбоины на д
 http://127.0.0.1:3000/api/get_claims_by_geo?lat=57.99330304745119&lng=56.19769414257814&topic=Ямы, выбоины на дороге, тротуаре
 ~~~
 
+PUG Express server side generated
+------------
+server side generated
+https://gist.github.com/joepie91/c0069ab0e0da40cc7b54b8c2203befe1
+
 
 
 Logging
