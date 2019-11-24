@@ -102,8 +102,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // System auth routers
 app.get('/login', (req, res, next) => { res.render('login', { title: `Login - ${version}` }) });
-app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
-app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
+// app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
+// app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
+app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(res, req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(next)});
+app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(res, req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(next)});
+
 app.use('/logout', authRouter.logout);
 
 // index router+ middlware for all routes loadUser
@@ -143,6 +146,6 @@ app.use(function(err, req, res, next) {
 });
 
  logger.info('Start - version %s',process.env.npm_package_version);
- logger.info(' app.locals.googleApiKey : %s ...', app.locals.googleApiMaps.substring(0, 10));
+ logger.info(' Config: app.locals.googleApiKey : %s ...', app.locals.googleApiMaps.substring(0, 10));
 
 module.exports = app;

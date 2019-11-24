@@ -18,6 +18,27 @@
         }        
     },
 
+    "sus_log": {
+        "functions": {
+            "sql": " WITH funcs AS ( SELECT n.nspname||'_'||proname||'.sql' AS sproc_name ,pg_get_functiondef(p.oid) as definition , proargnames AS arg_names ,t.typname AS return_type ,d.description FROM pg_proc p left JOIN pg_type t on p.prorettype = t.oid left JOIN pg_description d on p.oid = d.objoid JOIN pg_namespace n on n.oid = p.pronamespace WHERE n.nspname = 'sus_log' ) SELECT * FROM funcs",
+            "type":"sql_row2file"
+        },
+        "tables": {
+            "content":{
+                "data":[
+                    {"sql":"SELECT * FROM sus_log.dreports","filename":"sus_log__dreports.json"},
+                    {"sql":"SELECT * FROM sus_log.dtype","filename":"sus_log__dtype.json"},
+                    {"sql":"SELECT * FROM sus_log.dseverity","filename":"sus_log__dseverity.json"}
+                ],
+                "type":"sql_content"
+            },
+            "ddl":{
+                "sql": "select schemaname||'_'||tablename||'.sql' as flname ,get_ddl_t(schemaname,tablename,'{\"handle exceptions\":true}') as ddl from pg_tables where schemaname='sus_log';",
+                "type":"sql_row2file"
+            }
+        }        
+    },
+
     "webapi": {
         "functions": {
             "sql": " WITH funcs AS ( SELECT n.nspname||'_'||proname||'.sql' AS sproc_name ,pg_get_functiondef(p.oid) as definition , proargnames AS arg_names ,t.typname AS return_type ,d.description FROM pg_proc p left JOIN pg_type t on p.prorettype = t.oid left JOIN pg_description d on p.oid = d.objoid JOIN pg_namespace n on n.oid = p.pronamespace WHERE n.nspname = 'webapi' ) SELECT * FROM funcs",

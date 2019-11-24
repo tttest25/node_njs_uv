@@ -20,11 +20,12 @@ db.one("SELECT  version() as version,$1 AS value", version)
 
 /**
 * SessionCreate -> create 
-* @param {*} req - request
 * @param {*} res - response
-* @param {*} next - next callback
+* @param {*} pLogin - login
+* @param {*} pPassword - pass
+* @param {*} pSession - sess
 */
-async function SessionCreate(pLogin, pPassword, pSession) {
+async function SessionCreate(res, pLogin, pPassword, pSession) {
   try {
     const data = await db.one('SELECT * from webapi.SessionCreate(${pLogin},${pPassword},${pSession})', { pLogin, pPassword, pSession })
     let responseTime = Date.now() - res[cLogger.startTime];
