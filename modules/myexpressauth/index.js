@@ -92,8 +92,8 @@ async function simpleKerberos(token) {
         });
     return username;
     } catch (error) {
-        console.error(' simpleKerberos auth error ', error, kbServer) ;
-        return undefined;
+        logger.error(' simpleKerberos auth error ', error, kbServer) ;
+        throw new SimpleKerberosError('simpleKerberos on stage "STEP" error ', error);
     }
 }
 

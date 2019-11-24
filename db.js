@@ -201,9 +201,22 @@ async function get_claims_by_geo_fts(req, res, next) {
  
 }
 
+async function dbAny(sql) {
+  try {
+    const data = await db.any(sql);
+    return data;  
+  } catch (error) {
+    error.message+=" db.js:dbAny(error)";
+    throw (error);
+  }
+ 
+}
+
+
 
 module.exports = {
   db: db,
+  dbAny: dbAny,
   pgPool: db.$pool,
   SessionCreate: SessionCreate,
   webApi: webApi,

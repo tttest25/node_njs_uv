@@ -48,6 +48,8 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20191111 - Add /update to auto update git resources 
  *   20191115 - Move interface to Bootstrap 4
                 move API key GOOGLE to ENV 
+ *   20191121 - Add logic to backup postgresql  /backup 
+ *   20191124 - Fix kerberos auto login error - infinit loop 
 
 
 ------------

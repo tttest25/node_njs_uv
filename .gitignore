@@ -11,3 +11,4 @@ users.json
 *.pem
 *.keytab
 data
+pgbackup/pgbackup
