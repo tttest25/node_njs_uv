@@ -23,7 +23,7 @@ routerLogin.post('/', myKerberosCheckPassword, function(req, res, next) {
 routerLogout.get('/', function(req, res, next) {
   // console.log('Auth routh id %s %o',req.id,req);
   delete req.session.username;
-  res.render('login');
+  res.redirect('/login');
 });
 
 module.exports.login = routerLogin;

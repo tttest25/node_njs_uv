@@ -39,7 +39,7 @@ block content
             .form-inline
               label.my-1.mr-2(for="inlineFormCustomSelectPref") Тема
               select.form-control-sm.my-1.mr-sm-2#select_topic(style='width: 160px')
-                each val, index in {1:'one',2:'two',3:'three'}
+                each val, index in {1:'all',2:'two',3:'three'}
                   option(value=val) #{index}
               button.btn.btn-dark.btn-sm.mr-2(onclick="loadSelectedTopic()") Загрузить тему
               select.form-control-sm.mr-2#select_month(name="selMonth")

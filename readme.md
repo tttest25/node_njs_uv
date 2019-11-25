@@ -3,7 +3,12 @@
 
 
 ## TODO
-1. add ip to session db in meta
++0. add ip to session db in meta
+ 1. role models (auth roles)
++2. logging in db sus_log
+ 3. move api-> dict like template
+ 4. interface for api/templ dict + role model
+ 5. interface log
 
 ##Запуск
 ------------

@@ -116,7 +116,8 @@ const  myKerberosCheckPassword = ((req, res, next) => {
     })
     .catch((err) => {
         logger.error('Login/Pass - error :',username, err.message);
-        next();
+        res.render('login', { title: `Login - error`, error:  err.message}) 
+        // next(err);
     });   
 });
 
