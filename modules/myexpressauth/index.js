@@ -29,7 +29,7 @@ if (isWin) {
     };
     logger.debug('Start on Windows');
 } else {
-    logger.error('Start on Linux OS');
+    logger.debug('Start on Linux OS');
 }
 
 const kerberos = require('../kerberos');
@@ -105,13 +105,15 @@ async function simpleKerberos(token) {
 const  myKerberosCheckPassword = ((req, res, next) => {
     let username = req.body.username || 'def';
     let password = req.body.password || 'def';
+    // Normalize username
+    username = username.includes('@GORODPERM.RU')? username:username.concat('@GORODPERM.RU'); 
     return kerberos.checkPassword(username, password, 'HTTP/sm.gorodperm.ru','GORODPERM.RU')
     .then((data) => {
         logger.info('Login/Pass - success  ',username,data);
         req.auth = req.auth || {};
         req.session = req.session || {};
-        req.auth.username = username+'@GORODPERM.RU';
-        req.session.username = username+'@GORODPERM.RU';
+        req.auth.username = username;
+        req.session.username = username;
         next();
     })
     .catch((err) => {

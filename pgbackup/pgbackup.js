@@ -34,7 +34,7 @@ class PgBackup {
 
   run_backup(config) {
     //for (var prop in config) {
-      console.log(`Process object %o`,config);
+      // console.log(`Process object %o`,config);
       logger.info(`Process object ${config} ${this.path}`);
       //   this.curDepth = 1;
       //   this.curPath = `${this.path}/${prop}`;
@@ -43,7 +43,7 @@ class PgBackup {
   }
 
   async prc_node(node, pPath, pDepth) {
-    console.log(`Process node ${node} ${pPath}`);
+    // console.log(`Process node ${node} ${pPath}`);
     if (node.hasOwnProperty('type')) {
       logger.info(`Process type is ${node.type}`);
       PgBackup.pgMade++;

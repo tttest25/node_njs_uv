@@ -63,6 +63,28 @@ async function webApi(req, res, next) {
   }
 }
 
+/**
+* webApi2 -> Function for call WebAPi2 
+* @param {json} pInJson - conffig object
+*/
+async function webApi2(oConf) {
+  try {
+    let pJson = JSON.stringify(oConf);
+    let responseTime = Date.now();
+    // logger.debug('DB,js:webApi2: in param %o', inJson);
+    const data = await db.one('SELECT webapi.web_api2($1) as apidata', pJson)
+    responseTime = Date.now() - responseTime;
+    logger.debug({
+      responseTime
+    }, `DB,js:webApi2:${'replace to json point'} time ${responseTime}ms`);
+    return data;
+  } catch (error) {
+    error.message = "!db.js:webApi2  ".concat(error.severity, " / ", error.internalQuery, "->", error.where, ":", error.message);
+    throw (error);
+    // return next(error);
+  }
+}
+
 
 /**
 * webApiWeb -> Function for call WebJSON 
@@ -75,7 +97,7 @@ async function webApiWeb(oConf) {
     // const data = await db.one('SELECT * from uvdata.uv_data_web($1)', pJson)
     const data = await db.one('SELECT webapi.web_api_web($1) as webdata', pJson)
     responseTime = Date.now() - responseTime;
-    logger.debug({responseTime},`DB:webApiWeb:${JSON.stringify(data)} time ${responseTime} ms`);
+    logger.debug({responseTime},`DB:webApiWeb:${'replace_to_name_of_func'} time ${responseTime} ms`);
     return data;
   } catch (error) {
     error.message = "DB:webApiWeb error / " + error.message + " / " + error.hint;
@@ -221,6 +243,7 @@ module.exports = {
   pgPool: db.$pool,
   SessionCreate: SessionCreate,
   webApi: webApi,
+  webApi2,
   webApiWeb: webApiWeb,
   getSingle: getSingle,
   get_topics: get_topics,

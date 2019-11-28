@@ -45,6 +45,9 @@ function onResFinished (err) {
     this.removeListener('error', onResFinished)
     this.removeListener('finish', onResFinished)
 
+    // skip public and favicon finished log
+    if (this.req.originalUrl.toLowerCase().includes('favicon')) { return }
+
     var log = this.log
     var responseTime = Date.now() - this[startTime]
     var level = 'info'; //customLogLevel ? customLogLevel(this, err) : useLevel

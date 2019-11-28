@@ -5,9 +5,10 @@ mixin bsCard(title, text, hrefTxt, href)
     //- .card-header.text-center.p-1
     i(class!=attributes.class)
     //img.card-img-top(src='...' alt='...')
-    .card-body.text-left
+    .card-body.text-left.pb-1
       h5.card-title.text-center= title
       p.card-text.text-muted= text
+    .card-footer.text-left.bg-white.border-top-0.pt-1
       a.card-link(href=href)= hrefTxt
 
 mixin bsCardHeader(title, text, hrefTxt, href)
