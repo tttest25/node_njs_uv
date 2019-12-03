@@ -74,7 +74,7 @@ function onResFinished (err) {
     }, '=== request errored')
     return
     }
-
+ 
     log[level](ObjectParams, `=== request completed on ${responseTime}ms from ${this.req.originalUrl} by ${this.req.session.username}(${ip})`)
 
     ObjectParams=oReq=ip=null;

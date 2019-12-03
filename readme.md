@@ -56,6 +56,7 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20191121 - Add logic to backup postgresql  /backup 
  *   20191124 - Fix kerberos auto login error - infinit loop 
  *   20191127 - 0.2.2 -> move /api to universal engine
+ *   20191129 - 0.2.3 -> move /api,/app  to universal engine, add logs to DB, modified errors in db -> db return json in anyway 
 
 ------------
 ## Deploy
