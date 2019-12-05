@@ -16,6 +16,7 @@ router.param('arr', async (req, res, next, mode) => {
   try {
     let oReq = cLogger.objectSerializer(req, ['method', 'originalUrl', 'remoteAddress', 'remotePort', 'headers', 'body', 'query', 'params']);
     oReq.sessionId = req.session.id;
+    oReq.requestId = res.get('X-Request-Id');
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var modes = [].concat(req.params[0].split('/').slice(0));
     mode = mode+modes.shift();
