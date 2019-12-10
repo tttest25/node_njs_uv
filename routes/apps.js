@@ -34,7 +34,7 @@ router.param('arr', async (req, res, next, mode) => {
     res.locals.Result = await db.webApiWeb(ObjectParams);
     
     // #DEBUG move to trace
-    logger.debug('APPS.JS Process param in:%o -> out:%o', ObjectParams,res.locals.Result )
+    // logger.trace('APPS.JS web_app Process param in:%o -> out:%o', ObjectParams,res.locals.Result )
     next()
   } catch (error) {
     next(error);

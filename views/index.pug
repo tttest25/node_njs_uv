@@ -3,7 +3,8 @@ extends layout
 mixin bsCard(title, text, hrefTxt, href)
   .card(style='width: 15rem;').text-center
     //- .card-header.text-center.p-1
-    i(class!=attributes.class)
+    a(href=href)
+      i.text-dark(class!=attributes.class)
     //img.card-img-top(src='...' alt='...')
     .card-body.text-left.pb-1
       h5.card-title.text-center= title
@@ -65,8 +66,11 @@ block content
         .card-deck
           +bsCard('UV-geoinfo', 'Гео информационный проект - УВ', 'UV_GEO', '/map')(class="fas fa-globe-europe fa-5x mt-4")
           +bsCard('Templates', 'Работа с шаблонами интерфейса', 'Template', '/app/uvtemplate/list')(class="far fa-file-alt fa-5x mt-4")
+          +bsCard('Admin', 'Управление APP, User, Roles', 'Admin', '/app/admin')(class="fa  fa-tasks fa-5x mt-4")
           +bsCard('Logs', 'Работа с журналами', 'Logs', '/app/logs')(class="fas fa-clipboard-list fa-5x mt-4")
           +bsCard('Update-version', 'Обновить текущую версию', 'Update', '/update')(class="fa fa-refresh fa-5x mt-4")
+
+
 block footer
   footer
     // Текст внутри блока выровнен по правому краю. Цвет фона блока #2a2a2a, значения полей от блока до его содержимого равно 1em, цвет текста внутри блока белый (#fff)

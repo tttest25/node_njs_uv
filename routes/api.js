@@ -79,18 +79,15 @@ router.param('arr', async (req, res, next, mode) => {
 // WEB_API_API - route for  /api/*
 router.all('/(:arr)*', (req, res, next) => {
     let Result = res.locals.Result;
-    logger.debug(`API.JS entry point /api/${res.locals.mode||'Unknown'} route`, Result);
+    //logger.debug(`API.JS entry point /api/${res.locals.mode||'Unknown'} route`, Result);
+    logger.debug(`API.JS entry point /api/${res.locals.mode||'Unknown'} route`);
 
-    if (Result && Result.apidata && Result.apidata.error) {
-        // If error send error
-        let error = new Error(`DB url ${res.locals.mode||'Unknown'}: `.concat(Result.apidata.error));
-        next(error);
+    if (Result.apidata && "status" in Result.apidata) {
+        res.status(200).json(Result.apidata);
     } else {
-        res.status(200).json({
-            status: 1,
-            data: res.locals.Result,
-            message: `success Api - ${res.locals.mode||'None'}`
-        });
+        // If error send error
+        let error = new Error(`API.JS:DB url ${res.locals.mode||'Unknown'} not returned correct data: `.concat(Result.apidata.error));
+        next(error);
     }
 
 });
