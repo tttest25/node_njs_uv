@@ -7,7 +7,7 @@ var db = require('../db');
 const cLogger = require('../log');
 const logger = cLogger.createChildLogger({module: 'routes-api'});
 
-
+/*
 // example of error wrapper
 const handleErrorAsync = func => async (req, res, next) => {
     try {
@@ -18,7 +18,6 @@ const handleErrorAsync = func => async (req, res, next) => {
     }
 };
 
-/*
 function wrapAsync(fn) {
     return function(req, res, next) {
         fn(req, res, next).catch(next);
@@ -34,20 +33,21 @@ const asyncMiddleware = fn =>
 */
 
 /**
- * Old way of api to remove
+ * Old way of api to remove (absolete) #TODO delete !!!
  */
-router.post('/webApi/', db.webApi);
-router.get('/id/:id', db.getSingle);
-router.get('/get_claims_by_geo_fts', handleErrorAsync(db.get_claims_by_geo_fts));
+router.post('/webApi/', (req, res, next) => {
+        logger.error('API.JS OLD API  - error try to call /webApi/ '+req.originalUrl +' ->'+req.auth.username);
+        res.status(500).json({status:0,fatal:1,error:"API.JS OLD API  - error try to call /webApi/",url:req.originalUrl,username:req.auth.username});
+    }
 
-
+);
 
 // WEB_API_API - MiddleWare for process param
 router.param('arr', async (req, res, next, mode) => {
     try {
         let oReq = cLogger.objectSerializer(req, ['method', 'originalUrl', 'remoteAddress', 'remotePort', 'headers', 'body', 'query', 'params']);
         oReq.sessionId = req.session.id;
-        oReq.reqId = res.get('X-Request-Id');
+        oReq.requestId = res.get('X-Request-Id');
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         var modes = [].concat(req.params[0].split('/').slice(0));
         mode = mode + modes.shift();

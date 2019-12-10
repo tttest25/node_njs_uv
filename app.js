@@ -16,8 +16,6 @@ var expressKerberos = require('./modules/myexpressauth');
 
 var authRouter = require('./routes/auth');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var mapRouter = require('./routes/map');
 var docRouter = require('./routes/doc');
 var apiRouter = require('./routes/api');
 var appsRouter = require('./routes/apps');
@@ -112,9 +110,6 @@ app.use('/logout', authRouter.logout);
 // index router+ middlware for all routes loadUser
 app.use('/', loadUser, indexRouter);
 
-app.use('/users', usersRouter);
-// test route map
-app.use('/map', mapRouter);
 // Documents
 app.use('/doc', docRouter);
 

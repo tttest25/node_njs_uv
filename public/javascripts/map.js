@@ -94,27 +94,6 @@ claim_text:
 
 */
 
-function get_current_topic() {
-    var e = document.getElementById('select_topic'); 
-    return (e.options[e.selectedIndex].value);
-    
-}
-// функция формирования объекта конфигурации
-function get_current_topic_fts() {
-    let conf_obj= {topic:"", month:"", text:""};
-    let e = document.getElementById('select_topic'); 
-    conf_obj.topic = (e.options[e.selectedIndex].value);
-    e = document.getElementById('select_month'); 
-    conf_obj.month = (e.options[e.selectedIndex].value);
-    e = document.getElementById('select_radius'); 
-    conf_obj.radius = (e.options[e.selectedIndex].value);
-    conf_obj.text = document.getElementById('input_fts').value;
-
-    console.log("conf_obj %o",conf_obj);
-    return conf_obj;
-
-    
-}
 
 // функция формирования объекта конфигурации
 function get_params_json(pClick = null) {
@@ -137,20 +116,6 @@ function get_params_json(pClick = null) {
     
 }
 
-function loadPrevWeek(pWeek=0) {
-    getClaimsWeek(pWeek);
-}
-
-/** Get claims by week pWeek ago */
-function getClaimsWeek(pWeek) {
-        clearInfo();
-        getDataApi({func:"public.get_claims_week",args:[pWeek]},(data) => { 
-            mapSetHeatMap(data.data||[]);
-            add_info('getClaimsWeek Тема-'+'get_claims_week' +'( '+gpoints.length + ' )');
-            console.log('Ok'); 
-        });
-    
-}
 
 /** Get claims by topic */
 function loadGeoData(pClick = null,callback) {
@@ -167,24 +132,10 @@ function loadGeoData(pClick = null,callback) {
 /** Get claims by topic */
 function loadGeoDataApi(pClick = null,callback) {
     let pCfg =get_params_json(pClick);
-    getDataApi({func:"uvdata.api_get_claims",args:pCfg},(data) => { 
+    getDataApi({url:"/api/uvdata/api_get_claims",func:"uvdata.api_get_claims",args:pCfg},(data) => { 
         console.log('Load api success %o',{func:"uvdata.api_get_claims",args:pCfg}); 
         data.cfg = pCfg;
         callback(data);
-    });
-    
-}
-
-/** Get claims by topic with fts 
-   SELECT latitude, longitude from public.get_claims_by_topic_fts($1,	$2, $3),[req.query.topic,req.query.text,req.query.month] );
-*/
-function loadGeoDataFts(pObject) {
-    clearInfo();
-    getDataApi({func:"public.get_claims_by_topic_fts",args:[`'${pObject.topic}'`,`'${pObject.text}'`,`'${pObject.month}'`]},(data) => { 
-    // getGeoByTopicFts(pObject,(data) => { 
-        mapSetHeatMap(data.data||[]);
-        add_info('loadGeoDataFts Тема-'+pObject.topic +'( '+gpoints.length + ' )');
-        console.log('Ok'); 
     });
     
 }
@@ -228,7 +179,7 @@ function retTD(pObj) {
 function loadTextInfo(pObject) {
     pObject=pObject||{};
     clearInfo();
-    getDataApi({func:"uvdata.api_get_text_info",args:pObject},(data) => { 
+    getDataApi({url:"/api/uvdata/api_get_text_info",func:"uvdata.api_get_text_info",args:pObject},(data) => { 
     // getGeoByTopicFts(pObject,(data) => { 
         
         var iHtml='';
@@ -250,27 +201,11 @@ function loadTextInfo(pObject) {
     
 }
 
-/** Click on map without FTS */
-function getClaimsByGeo(pobject,callback) {
-    getDataApi({func:"public.get_claims_by_geo",args:[`'((${pobject.lat}, ${pobject.lng}), ${pobject.radius})'`,`'${pobject.topic}'`]},(pData) => { 
-    // fetchApi(location.origin+'/api/get_claims_by_geo', object,  (pData) => {
-        callback(pData.data);
-    }); 
-    }
-    
-function getClaimsByGeoFTS(pobject,callback) {
-    getDataApi({func:"public.get_claims_by_geo_fts",args:[`'((${pobject.lat}, ${pobject.lng}), ${pobject.radius})'`,`'${pobject.topic}'`,`'${pobject.text}'`,`'${pobject.month}'`]},(pData) => {     
-    // fetchApi(location.origin+'/api/get_claims_by_geo_fts', pobject,  (pData) => {
-            callback(pData.data);
-        }); 
-        }   
-
-
 /** Network */
 
 /** Main function to get data */
 function getDataApi(object,callback) {
-    fetchApiPost(location.origin+'/api/webapi', object,  (pData) => {callback(pData) }); 
+    fetchApiPost(location.origin+(object.url?object.url:'/api/webapi'), object,  (pData) => {callback(pData) }); 
 }
 
 
@@ -279,7 +214,7 @@ function getDataApi(object,callback) {
 function loadTopics() {
     let pCfg =get_params_json(null);
     select_topic_clear();
-    getDataApi({func:"uvdata.api_get_topics",args:pCfg},(data) => { 
+    getDataApi({url:"/api/uvdata/api_get_topics",func:"uvdata.api_get_topics",args:pCfg},(data) => { 
         fill_topic(data.data)
         console.log('Ok'); 
     });
@@ -290,9 +225,7 @@ function loadSelectedTopic() {
     loadTopics();
 }
 
-function loadSelectedTopicFts() {
-    loadGeoDataFts(get_current_topic_fts());
-}
+
 
 
 function mapSetHeatMap(data) {
@@ -336,6 +269,14 @@ function toggleHeatmap() {
     heatmap.setMap(heatmap.getMap() ? null : map);
 }
 
+function changeRadius() {
+    heatmap.set('radius', heatmap.get('radius') ? null : 40);
+}
+
+function changeOpacity() {
+    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+}
+
 function changeGradient() {
     var gradient = [
     'rgba(0, 255, 255, 0)',
@@ -356,23 +297,9 @@ function changeGradient() {
     heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
 }
 
-function changeRadius() {
-    heatmap.set('radius', heatmap.get('radius') ? null : 40);
-}
-
-function changeOpacity() {
-    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-}
 
 
-function fetchApi(pUrl, params={}, callback) {
-    var url = new URL(pUrl);
-         //,params = {lat:35.696233, long:139.570431};
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    fetch(url,{ credentials: 'include'})
-    .then(response => response.json())
-    .then(data =>callback(data))    
-}
+
 
 function fetchApiPost(pUrl, params={}, callback) {
     var url = new URL(pUrl);
