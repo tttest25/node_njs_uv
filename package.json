@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./bin/www.js | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r",
-    "start-pgbackup": "cd ./pgbackup && node --async-stack-traces   ./pgbackup.js  | pino-pretty -t -i module cd ./pgbackup/pgbackup && git add && git commit -am \"$(date +%m-%d-%Y) add admin and fix log\"",
+    "start-pgbackup": "cd ./pgbackup && node --async-stack-traces   ./pgbackup.js  | pino-pretty -t -i module cd ./pgbackup && git add && git commit -am \"$(date +%m-%d-%Y) add admin and fix log\"",
     "test_kerberos": " env KRB5_TRACE=/dev/stdout && ./node_modules/.bin/nodemon ./tmp/test2",
     "start-log": "npm start | jq -crR 'fromjson? | select(type == \"object\")'"
   },
