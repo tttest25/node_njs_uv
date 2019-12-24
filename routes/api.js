@@ -67,7 +67,8 @@ router.param('arr', async (req, res, next, mode) => {
         logger.trace('API.JS API2 --> params in:%o -> out:%o', ObjectParams, res.locals.Result);
 
         // Work with DB
-        res.locals.Result = await db.webApi2(ObjectParams);
+        const Result = await db.webApi2(ObjectParams);
+        res.locals.Result=Result;
 
         next()
     } catch (error) {
@@ -82,12 +83,17 @@ router.all('/(:arr)*', (req, res, next) => {
     //logger.debug(`API.JS entry point /api/${res.locals.mode||'Unknown'} route`, Result);
     logger.debug(`API.JS entry point /api/${res.locals.mode||'Unknown'} route`);
 
-    if (Result.apidata && "status" in Result.apidata) {
+    if (Result.apidata && "status" in Result.apidata && Result.apidata.status) {
         res.status(200).json(Result.apidata);
     } else {
-        // If error send error
-        let error = new Error(`API.JS:DB url ${res.locals.mode||'Unknown'} not returned correct data: `.concat(Result.apidata.error));
-        next(error);
+        if (Result.apidata) {
+          res.err=`!webapi.web_api2 Error  DB:${Result.apidata.error} message ${Result.apidata.message}`;
+          res.status(500).json(Result.apidata);
+        } else {
+          // If error send error
+          let error = new Error(`API.JS:DB url ${res.locals.mode||'Unknown'} not returned correct data: `.concat(Result.apidata.error));
+          next(error);
+        }
     }
 
 });

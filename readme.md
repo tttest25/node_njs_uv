@@ -3,12 +3,23 @@
 
 
 ## TODO
-+0. add ip to session db in meta
- 1. role models (auth roles)
-+2. logging in db sus_log
- 3. move api-> dict like template
- 4. interface for api/templ dict + role model
- 5. interface log
++ 0. add ip to session db in meta
++ 1. role models (auth roles)
++ 2. logging in db sus_log
++ 3. move api-> dict like template
+  4. interface for api/templ dict + role model
++ 5. interface log
+  6. typycal app - like skeletons
+  7. webapp - split to 2 steps -> get data  and link to template + cache of templates on times
+  8. add API auth on token without kerberos
+  9. add APP index
+ 10. APP: add APP news + admin
+ 11. APP node js: перевод app -> var.locals
+ 12. APP: создать app c типовым CRUD
+ 13. APP: добавить APP для Index 
+ 14. APP: переделать механизм генерации html на <code>{tdata"...":  , tcache:...}, ссылку на template и не выгпужать template
+ 15. APP: создать mixin menu
+ 
 
 ##Запуск
 ------------
@@ -21,7 +32,7 @@
 ## Logs
 npm start | jq -crR 'fromjson? | select(type == "object")'
 ## Send to Logstash
-npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
+npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r | pino-pretty -c -t -i req
 
 
 ## Autocannon

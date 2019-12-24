@@ -58,5 +58,12 @@
                 "type":"sql_row2file"
             }
         }        
+    },
+    
+    "webapi_admin": {
+        "functions": {
+            "sql": "WITH funcs AS ( SELECT n.nspname||'_'||proname||'.sql' AS sproc_name ,pg_get_functiondef(p.oid) as definition , proargnames AS arg_names ,t.typname AS return_type ,d.description FROM pg_proc p left JOIN pg_type t on p.prorettype = t.oid left JOIN pg_description d on p.oid = d.objoid JOIN pg_namespace n on n.oid = p.pronamespace WHERE n.nspname = 'webapi_admin' ) SELECT * FROM funcs",
+            "type":"sql_row2file"
+        }
     }
 }
