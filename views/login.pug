@@ -65,16 +65,18 @@ block styles
 block scripts
   script(type='text/javascript').
     function checkKerberos () {
+      debugger;
       fetch('/kerberos').then((response) => {
         console.log(response);
         if (response.status == 200) { 
           //- alert('ok');
-          window.location.href = '/'; 
+          //- window.location.href = '/'; 
+          window.location.href = new URL(response.url).pathname; 
         };
       })
     };
     window.onload = () => {
-      setTimeout(checkKerberos, 2000);
+       setTimeout(checkKerberos, 2000);
     };
 
 

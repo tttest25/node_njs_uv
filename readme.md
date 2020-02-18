@@ -1,5 +1,10 @@
-# Проект геоанализ Управляем вместе
-проект для геоанализа управляем вместе
+# Проект открытого конструктора БП.
+Проект Rapid app delelopment для автоматизации бизнесс процессов,
+в состав входит:
+ * PG/NODE.JS
+ * конструктор интерфесов и API + заготовка под централизованное логирование
+ * администрирование, логирование
+ * проект для геоанализа "управляем вместе"
 
 
 ## TODO
@@ -19,9 +24,11 @@
  13. APP: добавить APP для Index 
  14. APP: переделать механизм генерации html на <code>{tdata"...":  , tcache:...}, ссылку на template и не выгпужать template
  15. APP: создать mixin menu
+ !16. Отправка почты
+ +17. авторизация с переходом по ссылке
  
 
-##Запуск
+## Запуск
 ------------
 перед сборкой выполнить
 1. при установки поменять пароль - по умолчанию `mysecretpassword`
@@ -69,6 +76,11 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20191127 - 0.2.2 -> move /api to universal engine
  *   20191129 - 0.2.3 -> move /api,/app  to universal engine, add logs to DB, modified errors in db -> db return json in anyway 
  *   20191210 - 0.2.4 -> fix bootstrap select and add admin
+ *   20200217 - 0.2.5 ->  add auth redirect to target page
+ *   20200218 - 0.2.6 ->   ??? mailer 
+
+
+
 
 ------------
 ## Deploy

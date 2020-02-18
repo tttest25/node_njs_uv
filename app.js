@@ -45,8 +45,10 @@ function clsRequestId(namespace, generateId) {
 // check user and set user
 function loadUser(req, res, next) {
   logger.trace(logger.cls.active,'LoadUser - middleware - Loggerclsactive');
+  req.session = req.session || {};
   // logger.info(`CheckUser - req.session.username ${req.session.username} req.session.id ${req.session.id}  'X-Request-Id' ${res.get('X-Request-Id')}`);
   if (req.session.username) {
+    req.session.prevUrl='/';
     req.auth={};
     req.auth.username=req.session.username;
     logger.cls.set('sessionID', req.session.id);
@@ -61,6 +63,8 @@ function loadUser(req, res, next) {
     });
     */
   } else {
+    // save url for use
+    req.session.prevUrl = req.originalUrl;
     res.redirect('/login');
   }
 }
@@ -97,13 +101,34 @@ app.locals.googleApiMaps = `https://maps.googleapis.com/maps/api/js?key=${proces
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Debug url
+app.use( function(req, res, next) {
+  logger.info('Request URL:', req.originalUrl);
+  next();
+}
+);
 
 // System auth routers
 app.get('/login', (req, res, next) => { res.render('login', { title: `Login - ${version}` }) });
 // app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
 // app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(() => res.redirect('/'))});
-app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { SessionCreate(res, req.session.username,'pass',req.session.id).then(() => res.redirect('/')).catch(next)});
-app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => { SessionCreate(res, req.session.username,'kerberos',req.session.id).then(() => res.redirect('/')).catch(next)});
+app.post('/login', expressKerberos.myKerberosCheckPassword,(req, res, next) => { 
+  SessionCreate(res, req.session.username,'pass',req.session.id).then(
+    () => {
+      if(req.session.prevUrl) res.redirect(req.session.prevUrl);
+      else res.redirect('/');
+    }
+  ).catch(next)
+});
+
+app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => {
+  SessionCreate(res, req.session.username, 'kerberos', req.session.id).then(
+    () => {
+      if(req.session.prevUrl) res.redirect(req.session.prevUrl);
+      else res.redirect('/');
+    }
+  ).catch(next)
+});
 
 app.use('/logout', authRouter.logout);
 

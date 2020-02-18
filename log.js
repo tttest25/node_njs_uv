@@ -45,12 +45,15 @@ function onResFinished (err) {
     this.removeListener('error', onResFinished)
     this.removeListener('finish', onResFinished)
 
-    // skip public and favicon finished log
-    if (this.req.originalUrl.toLowerCase().includes('favicon')) { return }
+    var  vUrl=this.req.originalUrl.toLowerCase();
 
+    // skip public and favicon finished log
+    if (vUrl.includes('favicon') || vUrl.includes('images') || vUrl.includes('stylesheets') || vUrl.includes('javascript')) { return }
+    
     var log = this.log
     var responseTime = Date.now() - this[startTime]
     var level = 'info'; //customLogLevel ? customLogLevel(this, err) : useLevel
+    
     
     let oReq = objectSerializer(this.req,['method','originalUrl','remoteAddress','remotePort','headers']);
     // let oRes = {statusCode: this.statusCode};
