@@ -83,14 +83,13 @@ block scripts
 block content
   
   .box
-    form(action='./login', method='post')
+    .container#iebanner(style='color: red; display: none' name="iebanner")
+      .row
+        .col
+          | !!! Вы используете устаревший браузер Internet Explorer . Для работы с системой необходим современный браузер Chrome/Yandex/Firefox
+
+    form#loginform(action='./login', method='post')
       h1= title
-      // [if IE]
-      .container(style='color: red;')
-        .row
-          .col
-            | !!! Вы используете устаревший браузер Internet Explorer . Для работы с системой необходим соверменный браузер Chrome/Yandex/Firefox.
-      // [endif]
       label(for='uname')
       input(class="login" type='text', placeholder='Enter Username', name='username', required='')
       label(for='psw')
@@ -99,4 +98,12 @@ block content
       h2(style='color: red;')= error
       
 
-
+  script(type='text/javascript').
+    console.log('start')
+    // Define a convenience method and use it
+    if(navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > -1){
+      /* Microsoft Internet Explorer detected in. */
+      console.log('Explorer');
+      document.getElementById("iebanner").style.display = 'block';
+      document.getElementById("loginform").style.display = 'none';
+    }
