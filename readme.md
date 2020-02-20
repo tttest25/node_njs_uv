@@ -78,6 +78,8 @@ npm start | node ./node_modules/.bin/pino-socket -a 10.59.0.69 -p 3515 -m tcp -r
  *   20191129 - 0.2.3 -> move /api,/app  to universal engine, add logs to DB, modified errors in db -> db return json in anyway 
  *   20191210 - 0.2.4 -> fix bootstrap select and add admin
  *   20200217 - 0.2.5 ->  add auth redirect to target page
+ *   20200217 - 0.2.5a->  default create user 
+                          IE banner not needed
  *   20200218 - 0.2.6 ->   ??? mailer 
 
 
