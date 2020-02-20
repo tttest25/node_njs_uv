@@ -12,20 +12,21 @@
 + 1. role models (auth roles)
 + 2. logging in db sus_log
 + 3. move api-> dict like template
-  4. interface for api/templ dict + role model
++ 4. interface for api/templ dict + role model
 + 5. interface log
   6. typycal app - like skeletons
   7. webapp - split to 2 steps -> get data  and link to template + cache of templates on times
   8. add API auth on token without kerberos
-  9. add APP index
++ 9. add APP index
  10. APP: add APP news + admin
  11. APP node js: перевод app -> var.locals
  12. APP: создать app c типовым CRUD
- 13. APP: добавить APP для Index 
- 14. APP: переделать механизм генерации html на <code>{tdata"...":  , tcache:...}, ссылку на template и не выгпужать template
- 15. APP: создать mixin menu
- !16. Отправка почты
- +17. авторизация с переходом по ссылке
+ 13. APP: переделать механизм генерации html на <code>{tdata"...":  , tcache:...}, ссылку на template и не выгпужать template
+ 14. APP: создать mixin menu
+!15. Отправка почты
+ 16. авторизация с переходом по ссылке
+!17. починить tempate кнопки истории
++18. добавить пользователя Public
  
 
 ## Запуск

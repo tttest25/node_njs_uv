@@ -133,7 +133,9 @@ app.use('/kerberos', expressKerberos.myKerberos(), (req, res, next) => {
 app.use('/logout', authRouter.logout);
 
 // index router+ middlware for all routes loadUser
-app.use('/', loadUser, indexRouter);
+// app.use('/index', loadUser, indexRouter);
+// Set index root app as route -> /app/index
+app.use('/', loadUser , (req, res, next) => {if(req.url=='/') {req.url="/index";appsRouter(req, res, next)} else {next();}});
 
 // Documents
 app.use('/doc', docRouter);
